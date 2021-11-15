@@ -5,7 +5,15 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+
+import app.Client;
+import dao.PhongDao;
+
 import java.awt.event.*;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -13,7 +21,7 @@ import java.sql.*;
 
 
 public class DatPhong_UI extends JFrame{
-
+	private Client client;
     private int maHD = 0;
     
     public JPanel pnMain;
@@ -54,18 +62,18 @@ public class DatPhong_UI extends JFrame{
     private JButton btnTim;
     private JComboBox cboTinhTrang;
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, NotBoundException {
 		DatPhong_UI datPhongUI = new DatPhong_UI();
 		datPhongUI.start();
 		datPhongUI.setVisible(true);
 	}
     
-    public DatPhong_UI(){
-
+    public DatPhong_UI() throws IOException, NotBoundException{
+    	client = new Client();
     	
     }
 
-    public void start(){
+    public void start() throws MalformedURLException, RemoteException, NotBoundException{
 
         renderGUI();
         renderHoaDon();
@@ -267,7 +275,8 @@ public class DatPhong_UI extends JFrame{
     	
     }
 
-    public void renderDSPhong(){
+    public void renderDSPhong() throws MalformedURLException, RemoteException, NotBoundException{
+        PhongDao phongDao = client.lookupPhong();
         
     }
 

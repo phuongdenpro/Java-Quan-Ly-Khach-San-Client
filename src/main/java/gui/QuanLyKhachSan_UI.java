@@ -6,6 +6,8 @@ import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.*;
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -23,7 +25,7 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
 
     // khai báo các lớp giao diện ở đây
     private TrangChu_UI pageTrangChu = new TrangChu_UI();
-    private DatPhong_UI pageDatPhong = new DatPhong_UI();
+    private DatPhong_UI pageDatPhong;
     private ThanhToan_UI pageThanhToan = new ThanhToan_UI();
     private QuanLyDichVu_UI pageQLDichVu = new QuanLyDichVu_UI();
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
@@ -44,7 +46,10 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
 
     // private JPanel pnContainer;
     private ImageIcon icon_quest = new ImageIcon("data/images/question.png");
-    public QuanLyKhachSan_UI() {
+    public QuanLyKhachSan_UI() throws IOException, NotBoundException {
+    	pageDatPhong = new DatPhong_UI();
+    	
+    	
         setTitle("Quản Lý Khách Sạn");
         setSize(1000, 700);
         setLocationRelativeTo(null);
@@ -56,7 +61,9 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
 
     }
 
-    public QuanLyKhachSan_UI(int index) {
+    public QuanLyKhachSan_UI(int index) throws IOException, NotBoundException {
+    	pageDatPhong = new DatPhong_UI();
+    	
         setTitle("Quản Lý Khách Sạn");
         setSize(1000, 700);
         setLocationRelativeTo(null);
