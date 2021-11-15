@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import dao.ChiTietDVDao;
+import dao.ChiTietHoaDonPhongDao;
 import dao.DichVuDao;
 import dao.HoaDonDVDao;
 import dao.HoaDonPhongDao;
@@ -52,6 +53,7 @@ public class Client{
 	private KhachHangDao khachHangDao;
 	private LoaiPhongDao loaiPhongDao;
 	private PhongDao phongDao;
+	private ChiTietHoaDonPhongDao chiTietHDPDao;
 	
 	public static void main(String[] args) throws IOException, NotBoundException {
 		Client client = new Client();
@@ -69,76 +71,82 @@ public class Client{
 //		System.out.println(loaiPhongDao.test());
 	}
 
-	public ChiTietDVDao lookupChiTietDV() throws MalformedURLException, RemoteException, NotBoundException {
+	public ChiTietDVDao getChiTietDVDao() throws MalformedURLException, RemoteException, NotBoundException {
 		if(chiTietDVDao == null)
 			chiTietDVDao = (ChiTietDVDao) Naming.lookup("rmi://"+ ip +":"+ port +"/ChiTietDV");  
 		return this.chiTietDVDao; 
 	}
 	
-	public DichVuDao lookupDichVu() throws MalformedURLException, RemoteException, NotBoundException {
+	public ChiTietHoaDonPhongDao getChiTietHoaDonPhongDao() throws MalformedURLException, RemoteException, NotBoundException {
+		if(chiTietHDPDao == null)
+			chiTietHDPDao = (ChiTietHoaDonPhongDao) Naming.lookup("rmi://"+ ip +":"+ port +"/chiTietHoaDonPhong");  
+		return this.chiTietHDPDao; 
+	}
+	
+	public DichVuDao getDichVuDao() throws MalformedURLException, RemoteException, NotBoundException {
 		if(dichVuDao == null)
 			dichVuDao = (DichVuDao) Naming.lookup("rmi://"+ ip +":"+ port +"/DichVu");
 		return dichVuDao;
 	}
 	
-	public HoaDonDVDao lookupHoaDonDV() throws MalformedURLException, RemoteException, NotBoundException {
+	public HoaDonDVDao getHoaDonDVDao() throws MalformedURLException, RemoteException, NotBoundException {
 		if(hoaDonDVDao == null)
 			hoaDonDVDao = (HoaDonDVDao) Naming.lookup("rmi://"+ ip +":"+ port +"/HoaDonDV");
 		return hoaDonDVDao;
 	}
 	
-	public HoaDonPhongDao lookupHoaDonPhong() throws MalformedURLException, RemoteException, NotBoundException {
+	public HoaDonPhongDao getHoaDonPhongDao() throws MalformedURLException, RemoteException, NotBoundException {
 		if(hoaDonPhongDao == null)
 			hoaDonPhongDao = (HoaDonPhongDao) Naming.lookup("rmi://"+ ip +":"+ port +"/HoaDonPhong");
 		
 		return hoaDonPhongDao;
 	}
 	
-	public KhachHangDao lookupKhachHang() throws MalformedURLException, RemoteException, NotBoundException {
+	public KhachHangDao getKhachHangDao() throws MalformedURLException, RemoteException, NotBoundException {
 		if(khachHangDao == null)
 			khachHangDao = (KhachHangDao) Naming.lookup("rmi://"+ ip +":"+ port +"/KhachHang");
 		return khachHangDao;
 	}
 	
-	public LoaiPhongDao lookupLoaiPhong() throws MalformedURLException, RemoteException, NotBoundException {
+	public LoaiPhongDao getLoaiPhongDao() throws MalformedURLException, RemoteException, NotBoundException {
 		if(loaiPhongDao == null)
 			loaiPhongDao = (LoaiPhongDao) Naming.lookup("rmi://"+ ip +":"+ port +"/LoaiPhong");
 		return loaiPhongDao;
 	}
 	
-	public PhongDao lookupPhong() throws MalformedURLException, RemoteException, NotBoundException {
+	public PhongDao getPhongDao() throws MalformedURLException, RemoteException, NotBoundException {
 		if(phongDao == null)
 			phongDao = (PhongDao) Naming.lookup("rmi://"+ ip +":"+ port +"/Phong");
 		return phongDao;
 	}
 
-	public ChiTietDVDao getChiTietDVDao() {
-		return chiTietDVDao;
-	}
-
-	public DichVuDao getDichVuDao() {
-		return dichVuDao;
-	}
-
-	public HoaDonDVDao getHoaDonDVDao() {
-		return hoaDonDVDao;
-	}
-
-	public HoaDonPhongDao getHoaDonPhongDao() {
-		return hoaDonPhongDao;
-	}
-
-	public KhachHangDao getKhachHangDao() {
-		return khachHangDao;
-	}
-
-	public LoaiPhongDao getLoaiPhongDao() {
-		return loaiPhongDao;
-	}
-
-	public PhongDao getPhongDao() {
-		return phongDao;
-	}
+//	public ChiTietDVDao getChiTietDVDao() {
+//		return chiTietDVDao;
+//	}
+//
+//	public DichVuDao getDichVuDao() {
+//		return dichVuDao;
+//	}
+//
+//	public HoaDonDVDao getHoaDonDVDao() {
+//		return hoaDonDVDao;
+//	}
+//
+//	public HoaDonPhongDao getHoaDonPhongDao() {
+//		return hoaDonPhongDao;
+//	}
+//
+//	public KhachHangDao getKhachHangDao() {
+//		return khachHangDao;
+//	}
+//
+//	public LoaiPhongDao getLoaiPhongDao() {
+//		return loaiPhongDao;
+//	}
+//
+//	public PhongDao getPhongDao() {
+//		return phongDao;
+//	}
 	
 	
 }

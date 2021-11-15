@@ -14,7 +14,7 @@ import model.LoaiPhong;
 public class App {
 	public static void main(String[] args) throws IOException, NotBoundException {
 		Client client = new Client();
-		LoaiPhongDao loaiPhongDao = client.lookupLoaiPhong();
+		LoaiPhongDao loaiPhongDao = client.getLoaiPhongDao();
 		System.out.println("Connected");
 		LoaiPhong lp = new LoaiPhong("VIP", 150000.0);
 		System.out.println(loaiPhongDao.themLoaiPhong(lp));

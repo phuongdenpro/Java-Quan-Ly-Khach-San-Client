@@ -276,7 +276,7 @@ public class DatPhong_UI extends JFrame{
     }
 
     public void renderDSPhong() throws MalformedURLException, RemoteException, NotBoundException{
-        PhongDao phongDao = client.lookupPhong();
+        PhongDao phongDao = client.getPhongDao();
         
     }
 
