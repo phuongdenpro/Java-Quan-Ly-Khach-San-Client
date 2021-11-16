@@ -79,7 +79,7 @@ public class Client{
 	
 	public ChiTietHoaDonPhongDao getChiTietHoaDonPhongDao() throws MalformedURLException, RemoteException, NotBoundException {
 		if(chiTietHDPDao == null)
-			chiTietHDPDao = (ChiTietHoaDonPhongDao) Naming.lookup("rmi://"+ ip +":"+ port +"/chiTietHoaDonPhong");  
+			chiTietHDPDao = (ChiTietHoaDonPhongDao) Naming.lookup("rmi://"+ ip +":"+ port +"/ChiTietHoaDonPhong");  
 		return this.chiTietHDPDao; 
 	}
 	

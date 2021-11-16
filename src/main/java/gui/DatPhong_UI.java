@@ -1,23 +1,53 @@
 package gui;
 
-import java.awt.*;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+//import java.awt.*;
+//import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import app.Client;
 import dao.PhongDao;
+import model.ChiTietHoaDonPhong;
+import model.HoaDonPhong;
+import model.KhachHang;
+import model.LoaiPhong;
+import model.Phong;
+import utils.Ngay;
 
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.HeadlessException;
+//import java.awt.event.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.sql.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Color;
+import javax.swing.SwingConstants;
 
 
 public class DatPhong_UI extends JFrame{
@@ -31,271 +61,573 @@ public class DatPhong_UI extends JFrame{
     private ImageIcon icon_trash = new ImageIcon("data/images/trash.png");
     private ImageIcon icon_edit = new ImageIcon("data/images/edit.png");
     private ImageIcon icon_search = new ImageIcon("data/images/magnifying-glass.png");
-    private JTextField txtMaKH;
     private JTextField txtTenKH;
-    private DefaultComboBoxModel<String> modelMaPhong;
-    private JComboBox<String> cboMaPhong;
-    private kDatePicker dpTuNgay, dpDenNgay;
-    private JTextField txtGhiChu;
-    private JButton btnDatPhong;
-    private JButton btnSua;
-    private JButton btnHuy;
-    private JButton btnClear;
-    private DefaultTableModel modelAvail;
-    private JTable tblAvail;
-    public DefaultTableModel modelDatPhong;
-    public JTable tblDatPhong;
-    private DefaultComboBoxModel modelMaKH;
-    private JComboBox cboMaKH;
-    private JCheckBox chkIsNotKH;
-    private JCheckBox chkIsNhanPhong;
     private JTextField txtCMND;
+    private JTextField textField;
     private JTextField txtNgayHetHan;
-    private kDatePicker dpNgayHetHan;
-    private DefaultComboBoxModel<String> modelLoaiKH;
-    private JComboBox<String> cboLoaiKH;
-    private JFrame popup = new JFrame();;
-    private JButton btn_NhanPhong;
-    private JButton btn_HuyPhong;
-    public JButton btn_TraPhong = new JButton("Trả phòng");
-    private JTextField txtTim;
-    private JButton btnTim;
-    private JComboBox cboTinhTrang;
+    private JTextField textField_1;
+    private JTextField txtTimKiem;
+	private DefaultTableModel modelDSPhong;
+	private DefaultComboBoxModel<String> modelLoaiPhong;
+	private JComboBox cboLoc;
+	private DefaultComboBoxModel<String> modelTenKH;
+	private JComboBox cboKhachHang;
+	private DefaultComboBoxModel<String> modelLoaiKH;
+	private JComboBox cboLoaiKH;
+	private JCheckBox chkKhachHangMoi;
+	private JTable tblDSPhong;
+	private DefaultTableModel modelChiTietDon;
+	private JTable tblChiTietDon;
+	private JButton btnDatPhong;
+	private JButton btnLamMoi;
+	private List<KhachHang> dskh;
+	private List<LoaiPhong> dslp;
+	private List<Phong> dsp;
+	private kDatePicker dpNgayHetHan;
+	private kDatePicker dpTuNgay;
+	private kDatePicker dpDenNgay;
+	private JTextField txtSoDienThoai;
+	private List<Phong> cthdp = new ArrayList<Phong>();;
+    
+    
     
     public static void main(String[] args) throws IOException, NotBoundException {
 		DatPhong_UI datPhongUI = new DatPhong_UI();
-		datPhongUI.start();
+//		datPhongUI.start();
 		datPhongUI.setVisible(true);
+		datPhongUI.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
     
     public DatPhong_UI() throws IOException, NotBoundException{
     	client = new Client();
-    	
+    	start();
     }
 
     public void start() throws MalformedURLException, RemoteException, NotBoundException{
 
         renderGUI();
-        renderHoaDon();
-        renderKhachHang();
-        renderDSPhong();
+        renderData();
     }
 
     public void renderGUI() {
     	setSize(1350, 600);
         JPanel contentPane = new JPanel();
         setContentPane(contentPane);
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        JPanel pTop = new JPanel();
-        pTop.setPreferredSize(new Dimension(1000, 400));
-        pTop.setLayout(new BoxLayout(pTop, BoxLayout.X_AXIS));
-        contentPane.add(pTop);
+        contentPane.setLayout(new BorderLayout(0, 0));
         
-        // Fields
-        JPanel p_sec_Fields = new JPanel();
-        p_sec_Fields.setLayout(new BoxLayout(p_sec_Fields, BoxLayout.Y_AXIS));
-        pTop.add(p_sec_Fields);
-        pTop.add(space(20, 20));
-
-        JPanel p_sec_f_top = new JPanel();
-        p_sec_f_top.setLayout(new BoxLayout(p_sec_f_top, BoxLayout.X_AXIS));
-        p_sec_Fields.add(p_sec_f_top);
+        JPanel panel = new JPanel();
+        contentPane.add(panel, BorderLayout.WEST);
         
-
-        Box p_l = Box.createVerticalBox();
-        Box p_r = Box.createVerticalBox();
-        p_l.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
-        // p_r.setLayout(new BoxLayout(p_r, BoxLayout.Y_AXIS));
-        p_sec_f_top.add(p_l);
-        p_sec_f_top.add(p_r);
-
-        JLabel lbMaKH = new JLabel("Mã khách hàng");
-        lbMaKH.setFont(fontSize(20));
-        JLabel lbTenKH = new JLabel("Tên khách hàng");
-        lbTenKH.setFont(fontSize(20));
-        JLabel lbCMND = new JLabel("Cmnd");
-        lbCMND.setFont(fontSize(20));
-        JLabel lbNgayHetHan = new JLabel("Ngày hết hạn");
-        lbNgayHetHan.setFont(fontSize(20));
-        JLabel lbLoaiKH = new JLabel("Loại khách hàng");
-        lbLoaiKH.setFont(fontSize(20));
-        JLabel lbMaPhong = new JLabel("Mã phòng");
-        lbMaPhong.setFont(fontSize(20));
-        JLabel lbNgayDen = new JLabel("Ngày đến");
-        lbNgayDen.setFont(fontSize(20));
-        JLabel lbNgayDi = new JLabel("Ngày đi");
-        lbNgayDi.setFont(fontSize(20));
+        JPanel panel_2 = new JPanel();
+        panel.add(panel_2);
+        panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.Y_AXIS));
         
-        p_l.add(lbMaKH);
-        p_l.add(Box.createVerticalStrut(7));
-        p_l.add(lbTenKH);
-        p_l.add(Box.createVerticalStrut(7));
-        p_l.add(lbCMND);
-        p_l.add(Box.createVerticalStrut(7));
-        p_l.add(lbNgayHetHan);
-        p_l.add(Box.createVerticalStrut(7));
-        p_l.add(lbLoaiKH);
-        p_l.add(Box.createVerticalStrut(7));
-        p_l.add(lbMaPhong);
-        p_l.add(Box.createVerticalStrut(7));
-        p_l.add(lbNgayDen);
-        p_l.add(Box.createVerticalStrut(7));
-        p_l.add(lbNgayDi);
-        p_l.add(Box.createVerticalStrut(10));
-
-        // txtMaKH = new JTextField(10);
-        modelMaKH = new DefaultComboBoxModel();
-        cboMaKH = new JComboBox(modelMaKH);
+        JPanel panel_4 = new JPanel();
+        panel_2.add(panel_4);
         
-
-        txtTenKH = new JTextField(10);
-        txtTenKH.setEnabled(false);
-        txtCMND = new JTextField(10);
-        txtCMND.setEnabled(false);
-
-        dpNgayHetHan = new kDatePicker(200);
-        dpNgayHetHan.setPreferredSize(new Dimension(200, 40));
-        dpNgayHetHan.setEnabled(false);
+        JLabel lblThongTinDatPhong = new JLabel("Thông tin đặt phòng");
+        lblThongTinDatPhong.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        panel_4.add(lblThongTinDatPhong);
         
-       
-        modelLoaiKH = new DefaultComboBoxModel<String>();
-        modelLoaiKH.addElement("Việt nam");
-        modelLoaiKH.addElement("Nước ngoài");
-        cboLoaiKH = new JComboBox<String>(modelLoaiKH);
-        cboLoaiKH.setEnabled(false);
-
-        modelMaPhong = new DefaultComboBoxModel<String>();
-        cboMaPhong = new JComboBox<String>(modelMaPhong);
-
-        dpTuNgay = new kDatePicker(200);
-        dpTuNgay.setPreferredSize(new Dimension(200, 40));
-        dpDenNgay = new kDatePicker(200);
-        dpDenNgay.setPreferredSize(new Dimension(200, 40));
-
-        txtGhiChu = new JTextField(10);
-        p_r.add(Box.createVerticalStrut(15));
-        p_r.add(cboMaKH);
-        p_r.add(Box.createVerticalStrut(10));
-        p_r.add(txtTenKH);
-        p_r.add(Box.createVerticalStrut(10));
-        p_r.add(txtCMND);
-        p_r.add(Box.createVerticalStrut(10));
-        p_r.add(dpNgayHetHan);
-        p_r.add(Box.createVerticalStrut(0));
-        p_r.add(cboLoaiKH);
-        p_r.add(Box.createVerticalStrut(10));
-        p_r.add(cboMaPhong);
-        p_r.add(Box.createVerticalStrut(10));
-        p_r.add(dpTuNgay);
-        p_r.add(Box.createVerticalStrut(5));
-        p_r.add(dpDenNgay);
-
-        // check box
-        JPanel p_sec_f_center = new JPanel();
-        p_sec_Fields.add(p_sec_f_center);
-        chkIsNotKH = new JCheckBox("Khách hàng mới");
-        p_sec_f_center.add(chkIsNotKH);
-        // action
-        JPanel p_sec_f_bottom = new JPanel();
-        GridLayout grid = new GridLayout(0, 2);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        p_sec_f_bottom.setLayout(grid);
-        p_sec_Fields.add(p_sec_f_bottom);
-
-        btnDatPhong = new JButton("Đặt phòng", icon_add);
-        btnSua = new JButton("Sửa", icon_edit);
-        btnHuy = new JButton("Hủy", icon_trash);
-        btnClear = new JButton("Làm lại", icon_refresh);
-        p_sec_f_bottom.add(btnDatPhong);
-        p_sec_f_bottom.add(btnClear);
-
-        // Danh sách phòng trống
-        JPanel p_sec_DS = new JPanel();
-        p_sec_DS.setLayout(new BoxLayout(p_sec_DS, BoxLayout.Y_AXIS));
+        JPanel panel_3 = new JPanel();
+        FlowLayout flowLayout = (FlowLayout) panel_3.getLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3);
         
-        pTop.add(p_sec_DS);
-        JLabel lbAvail = new JLabel("Danh sách phòng");
-        lbAvail.setAlignmentX(Component.CENTER_ALIGNMENT);
-        p_sec_DS.add(lbAvail);
-        String[] cols_avail = {"Mã phòng", "Loại phòng", "Sức chứa", "Số giường", "Vị trí", "Giá phòng"};
-        modelAvail = new DefaultTableModel(cols_avail, 0);
-        tblAvail = new JTable(modelAvail);
-
-
-        // tblAvail.setLayout(new FlowLayout());
-        // tblAvail.setPreferredSize(new Dimension(2000, 150));
-        p_sec_DS.add(new JScrollPane(tblAvail));
-
-        // modelAvail.addRow(new Object[]{"1", "vip", "2", "1", "Lau 1", "120.000"});
-        // modelAvail.addRow(new Object[]{"2", "vip", "2", "1", "Lau 2", "120.000"});
-        // modelAvail.addRow(new Object[]{"3", "vip", "2", "1", "Lau 3", "120.000"});
-
-
-        // danh sách đặt phòng
-        JPanel p_sec_table = new JPanel();
-        contentPane.add(p_sec_table);
-
-        JPanel pTimKiem = new JPanel();
-        p_sec_table.add(pTimKiem);
-        pTimKiem.add(new JLabel("Mã hóa đơn: "));
-        txtTim = new JTextField(20);
-        pTimKiem.add(txtTim);
-        btnTim = new JButton("Tim kiếm", icon_search);
-        pTimKiem.add(btnTim);
-
-        pTimKiem.add(new JLabel("Lọc: "));
-        DefaultComboBoxModel<String> modelTinhTrang = new DefaultComboBoxModel<String>();
-        cboTinhTrang = new JComboBox(modelTinhTrang);
-        modelTinhTrang.addElement("Tất cả");
-        modelTinhTrang.addElement("Đã đặt phòng");
-        modelTinhTrang.addElement("Đã nhận phòng");
-        modelTinhTrang.addElement("Đã trả phòng");
-        pTimKiem.add(cboTinhTrang);
-
-
-        JPanel pTable = new JPanel();
-        pTable.setLayout(new BoxLayout(pTable, BoxLayout.X_AXIS));
-        contentPane.add(pTable);
-
-        String[] cols_datphong = {"Mã hóa đơn", "Mã khách hàng", "Tên khách hàng", "Mã phòng", "Loại phòng", "Ngày đến", "Ngày đi", "Tình trạng"};
-        modelDatPhong = new DefaultTableModel(cols_datphong, 0);
-        tblDatPhong = new JTable(modelDatPhong);
-        pTable.add(new JScrollPane(tblDatPhong));
-        // modelDatPhong.addRow(new Object[]{"1", "1", "Tran Van Nhan", "1", "01-01-2001", "01-01-2001", ""});
-        // modelDatPhong.addRow(new Object[]{"2", "1", "Tran Van Nhan", "1", "01-01-2001", "01-01-2001", ""});
-        // modelDatPhong.addRow(new Object[]{"3", "1", "Tran Van Nhan", "1", "01-01-2001", "01-01-2001", ""});
-        // modelDatPhong.addRow(new Object[]{"4", "1", "Tran Van Nhan", "1", "01-01-2001", "01-01-2001", ""});
+        JLabel lblMaKH = new JLabel("Mã Khách hàng");
+        lblMaKH.setPreferredSize(new Dimension(150, 30));
+        panel_3.add(lblMaKH);
         
+        modelTenKH = new DefaultComboBoxModel<String>();
+        cboKhachHang = new JComboBox(modelTenKH);
+        cboKhachHang.setPreferredSize(new Dimension(222, 22));
+        panel_3.add(cboKhachHang);
+        
+        
+        JPanel panel_3_1 = new JPanel();
+        FlowLayout flowLayout_1 = (FlowLayout) panel_3_1.getLayout();
+        flowLayout_1.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1);
+        
+        JLabel lblTenKH = new JLabel("Tên khách hàng");
+        lblTenKH.setPreferredSize(new Dimension(150, 30));
+        panel_3_1.add(lblTenKH);
+        
+        txtTenKH = new JTextField();
+        panel_3_1.add(txtTenKH);
+        txtTenKH.setColumns(20);
+        
+        JPanel panel_3_1_1 = new JPanel();
+        FlowLayout flowLayout_7 = (FlowLayout) panel_3_1_1.getLayout();
+        flowLayout_7.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1_1);
+        
+        JLabel lblCMND = new JLabel("CMND");
+        lblCMND.setPreferredSize(new Dimension(150, 30));
+        panel_3_1_1.add(lblCMND);
+        
+        txtCMND = new JTextField();
+        txtCMND.setColumns(20);
+        panel_3_1_1.add(txtCMND);
+        
+        JPanel panel_3_1_1_1 = new JPanel();
+        FlowLayout flowLayout_8 = (FlowLayout) panel_3_1_1_1.getLayout();
+        flowLayout_8.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1_1_1);
+        
+        JLabel lblSDT = new JLabel("Số điện thoại");
+        lblSDT.setPreferredSize(new Dimension(150, 30));
+        panel_3_1_1_1.add(lblSDT);
+        
+        txtSoDienThoai = new JTextField();
+        txtSoDienThoai.setColumns(20);
+        panel_3_1_1_1.add(txtSoDienThoai);
+        
+        JPanel panel_3_1_2_2 = new JPanel();
+        FlowLayout flowLayout_4 = (FlowLayout) panel_3_1_2_2.getLayout();
+        flowLayout_4.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1_2_2);
+        
+        JLabel lblNgyHtHn = new JLabel("Ngày hết hạn");
+        lblNgyHtHn.setPreferredSize(new Dimension(150, 30));
+        panel_3_1_2_2.add(lblNgyHtHn);
+        
+        dpNgayHetHan = new kDatePicker(222);
+        dpNgayHetHan.setPreferredSize(new Dimension(222, 20));
+        panel_3_1_2_2.add(dpNgayHetHan);
+        
+        JPanel panel_3_1_2 = new JPanel();
+        FlowLayout flowLayout_3 = (FlowLayout) panel_3_1_2.getLayout();
+        flowLayout_3.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1_2);
+        
+        JLabel lblLoaiKH = new JLabel("Loại khách hàng");
+        lblLoaiKH.setPreferredSize(new Dimension(150, 30));
+        panel_3_1_2.add(lblLoaiKH);
+        
+        cboLoaiKH = new JComboBox();
+        cboLoaiKH.setPreferredSize(new Dimension(222, 22));
+        panel_3_1_2.add(cboLoaiKH);
+        cboLoaiKH.addItem("Việt Nam");
+        cboLoaiKH.addItem("Nước ngoài");
+        
+        JPanel panel_3_1_2_1 = new JPanel();
+        FlowLayout flowLayout_5 = (FlowLayout) panel_3_1_2_1.getLayout();
+        flowLayout_5.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1_2_1);
+        
+        JLabel lblNgayDen = new JLabel("Ngày đến");
+        lblNgayDen.setPreferredSize(new Dimension(150, 30));
+        panel_3_1_2_1.add(lblNgayDen);
+        
+        dpTuNgay = new kDatePicker(222);
+        dpTuNgay.setPreferredSize(new Dimension(222, 20));
+        panel_3_1_2_1.add(dpTuNgay);
+        
+        JPanel panel_3_1_2_1_1 = new JPanel();
+        FlowLayout flowLayout_6 = (FlowLayout) panel_3_1_2_1_1.getLayout();
+        flowLayout_6.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1_2_1_1);
+        
+        JLabel lblNgyi = new JLabel("Ngày đi");
+        lblNgyi.setPreferredSize(new Dimension(150, 30));
+        panel_3_1_2_1_1.add(lblNgyi);
+        
+        dpDenNgay = new kDatePicker(222);
+        dpDenNgay.setPreferredSize(new Dimension(222, 20));
+        panel_3_1_2_1_1.add(dpDenNgay);
+        
+        JPanel panel_7 = new JPanel();
+        FlowLayout flowLayout_2 = (FlowLayout) panel_7.getLayout();
+        flowLayout_2.setAlignment(FlowLayout.RIGHT);
+        panel_2.add(panel_7);
+        
+        chkKhachHangMoi = new JCheckBox("Khách hàng mới");
+        panel_7.add(chkKhachHangMoi);
+        
+        JPanel panel_5 = new JPanel();
+        panel_2.add(panel_5);
+        
+        btnDatPhong = new JButton("Đặt phòng");
+        btnDatPhong.setBackground(Color.WHITE);
+        panel_5.add(btnDatPhong);
+        
+        btnLamMoi = new JButton("Làm mới");
+        btnLamMoi.setBackground(Color.WHITE);
+        panel_5.add(btnLamMoi);
+        
+        JPanel panel_1 = new JPanel();
+        contentPane.add(panel_1, BorderLayout.CENTER);
+        panel_1.setLayout(new BorderLayout(0, 0));
+        
+        JPanel panel_6 = new JPanel();
+        panel_1.add(panel_6, BorderLayout.NORTH);
+        
+        JLabel lblTimKiem = new JLabel("Mã phòng: ");
+        panel_6.add(lblTimKiem);
+        
+        txtTimKiem = new JTextField();
+        txtTimKiem.setPreferredSize(new Dimension(150, 26));
+        panel_6.add(txtTimKiem);
+        txtTimKiem.setColumns(10);
+        
+        JButton btnTimKiem = new JButton("Tìm kiếm");
+        btnTimKiem.setBackground(Color.WHITE);
+        panel_6.add(btnTimKiem);
+        
+        JLabel lblLoc = new JLabel("Lọc theo loại phòng");
+        panel_6.add(lblLoc);
+        
+        modelLoaiPhong = new DefaultComboBoxModel<String>();
+        cboLoc = new JComboBox(modelLoaiPhong);
+        panel_6.add(cboLoc);
+        
+        JButton btnXemLichDat = new JButton("Xem lịch đặt");
+        btnXemLichDat.setBackground(Color.WHITE);
+        panel_6.add(btnXemLichDat);
+        
+        JButton btnThem = new JButton("Đặt phòng này");
+        btnThem.setBackground(Color.WHITE);
+        panel_6.add(btnThem);
+        
+        JButton btnHuy = new JButton("Hủy đặt phòng này");
+        btnHuy.setBackground(Color.WHITE);
+        panel_6.add(btnHuy);
+        
+        
+        
+        JPanel panel_8 = new JPanel();
+        panel_1.add(panel_8, BorderLayout.CENTER);
+        
+        String[] cols = {"Mã phòng", "Vị trí", "Số giường", "Số người", "Loại phòng", "Giá phòng"};
+        modelDSPhong = new DefaultTableModel(cols, 0);
+        panel_8.setLayout(new GridLayout(2, 1, 0, 0));
+        tblDSPhong = new JTable(modelDSPhong);
+        JScrollPane scrollPane = new JScrollPane(tblDSPhong);
+        panel_8.add(scrollPane);
+        
+        JPanel panel_9 = new JPanel();
+        panel_8.add(panel_9);
+        panel_9.setLayout(new BorderLayout(0, 0));
+        
+        JLabel lblNewLabel = new JLabel("Dang sách phòng đặt");
+        lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel_9.add(lblNewLabel, BorderLayout.NORTH);
+        
+        modelChiTietDon = new DefaultTableModel(cols, 0);
+        tblChiTietDon = new JTable(modelChiTietDon);
+        JScrollPane scrollPane_1 = new JScrollPane(tblChiTietDon);
+        panel_9.add(scrollPane_1);
+        
+        btnLamMoi.addActionListener((e) -> {
+        	clear();
+        });
+        
+        cboLoc.addActionListener((e) -> {
+        	try {
+				renderDSPhong();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        });
+        
+        cboKhachHang.addActionListener((e) -> {
+        	int idx = cboKhachHang.getSelectedIndex();
+        	if(idx <= 0)
+        		return;
+        	
+        	chkKhachHangMoi.setSelected(false);
+        	showKhachHang(dskh.get(idx-1));
+        	disableForm();
+        	
+        });
+        
+        chkKhachHangMoi.addActionListener((e) -> {
+        	if(chkKhachHangMoi.isSelected()) {
+        		enableForm();
+        	}else {
+        		disableForm();
+        	}
+        });
+        
+        btnThem.addActionListener((e) -> {
+        	int idx = tblDSPhong.getSelectedRow();
+        	if(idx == -1) {
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng");
+        		return ;
+        	}
+        	
+        	Phong phong = dsp.get(idx);
+        	cthdp.add(phong);
+        	try {
+				renderDSPhong();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
+        	
+        });
+        
+        btnHuy.addActionListener((e) -> {
+        	int idx = tblChiTietDon.getSelectedRow();
+        	if(idx == -1) {
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng đã thêm để hủy");
+        		return ;
+        	}
+        	
+        	cthdp.remove(idx);
+        	try {
+				renderDSPhong();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
+        	
+        });
+        
+        btnDatPhong.addActionListener((e) -> {
+        	if(cthdp.size() == 0) {
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng thêm phòng");
+        		return;
+        	}
+        	
+        	if(txtTenKH.getText().trim().equals("")){
+                renderError(txtTenKH, "Tên khách hàng không được để trống");
+                return;
+            }
 
+            if(!txtTenKH.getText().matches("^[^0-9]{2,25}$")){
+                renderError(txtTenKH, "Tên khách hàng không được chứa chữ số, ít nhất là 2 ký tự");
+                return;
+            }
+
+            if(txtCMND.getText().trim().equals("")){
+                renderError(txtCMND, "Cmnd không được để trống");
+                return;
+            }
+
+            if(!txtCMND.getText().matches("^(\\d{9}|\\d{12})$")){
+                renderError(txtTenKH, "Cmnd chỉ được chứa chữ số, bao gồm 9 hoặc 12 ký tự");
+                return;
+            }
+            
+            if(!txtSoDienThoai.getText().matches("^0[0-9]{9}$")){
+	            renderError(txtSoDienThoai, "Số điện thoại không hợp lệ");
+	            return;
+	        }
+            
+            Date homNay = Ngay.homNay(); 
+            Date ngayHetHan = Ngay.homNay();
+            try {
+                ngayHetHan = dpNgayHetHan.getFullDate();
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+            
+            if(!ngayHetHan.after(homNay)){
+                JOptionPane.showMessageDialog(contentPane, "Giấy tờ đã hết hạn, không thể đặt phòng");
+                return;
+            }
+            
+        	Date tuNgay = Ngay.homNay(), denNgay = Ngay.homNay();
+            
+            try {
+                tuNgay = dpTuNgay.getFullDate();
+                denNgay = dpDenNgay.getFullDate(); 
+            } catch (ParseException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            
+            if(!tuNgay.toString().equals(homNay.toString()) && tuNgay.before(homNay)){
+                JOptionPane.showMessageDialog(pnMain, "Ngày đến phải không được trước ngày hiện tại");
+                return;
+            }
+            
+            if(!tuNgay.toString().equals(denNgay.toString()) && denNgay.before(tuNgay)){
+                JOptionPane.showMessageDialog(pnMain, "Ngày đi không được trước ngày đến");
+                return;
+            }
+            
+            if(!denNgay.toString().equals(ngayHetHan.toString()) && ngayHetHan.before(denNgay)){
+                JOptionPane.showMessageDialog(pnMain, "Giấy tờ không đủ hạn, không thể đặt phòng");
+                return;
+            }
+            
+            KhachHang kh;
+            if(chkKhachHangMoi.isSelected()) {
+            	kh = new KhachHang(
+            			txtTenKH.getText(), 
+            			txtCMND.getText(), 
+            			txtSoDienThoai.getText(), 
+            			ngayHetHan, 
+            			(String) cboLoaiKH.getSelectedItem());
+//            	try {
+//					client.getKhachHangDao().themKhachHang(kh);
+//				} catch (RemoteException | MalformedURLException | NotBoundException e1) {
+//					JOptionPane.showMessageDialog(contentPane, "Có lỗi xảy ra");
+//					e1.printStackTrace();
+//					return;
+//				}
+            }else {
+            	kh = dskh.get(cboKhachHang.getSelectedIndex()-1);
+            }
+            
+            
+            
+            List<ChiTietHoaDonPhong> dscthdp = new ArrayList<ChiTietHoaDonPhong>();
+            cthdp.forEach(phong -> {
+            	dscthdp.add(new ChiTietHoaDonPhong(phong));
+            });
+            HoaDonPhong hdp = new HoaDonPhong(tuNgay, denNgay, kh, dscthdp);
+            try {
+				if(client.getHoaDonPhongDao().themHoaDonPhong(hdp)) {
+					JOptionPane.showMessageDialog(contentPane, "Đặt phòng thành công");
+					return;
+				}	
+				
+			} catch (HeadlessException | RemoteException | MalformedURLException | NotBoundException e1) {
+
+				e1.printStackTrace();
+			}
+            
+            JOptionPane.showMessageDialog(contentPane, "Đặt phòng thất bại");
+        });
+        
+        btnTimKiem.addActionListener((e) -> {
+        	String maPhong = txtTimKiem.getText();
+        	for(int i=0; i<dsp.size(); i++) {
+        		if(dsp.get(i).getMaPhong().equals(maPhong)) {
+        			System.out.println(i);
+        			tblDSPhong.setRowSelectionInterval(i, i);
+        			return;
+        		}
+        	}
+        	JOptionPane.showMessageDialog(contentPane, "Không tìm thấy");
+        });
+        
+        disableForm();
     }
 
-    public void renderDSPhongAvail(){
-    	
+    public void renderData() throws MalformedURLException, RemoteException, NotBoundException{
+    	renderDSPhong();
+    	renderKhachHang();
+    	renderLoaiPhong();
     }
 
     public void renderDSPhong() throws MalformedURLException, RemoteException, NotBoundException{
         PhongDao phongDao = client.getPhongDao();
         
-    }
-
-    public void renderHoaDon(){
+        int idx = cboLoc.getSelectedIndex();
+        if(idx <= 0)
+        	dsp = phongDao.getListPhong();
+        else {
+        	dsp = phongDao.getPhongByMaLoaiPhong(dslp.get(idx-1).getMaLoaiPhong());
+        }
         
-    }
-
-    public void renderKhachHang(){
+        tblDSPhong.clearSelection();
+        modelDSPhong.getDataVector().removeAllElements();
+        for(int j=0; j<dsp.size(); j++) {
+        	Phong phong = dsp.get(j);
+        	
+        	boolean flag = true;
+        	for(int i=0; i<cthdp.size(); i++) {
+        		if(phong.getMaPhong().equals(cthdp.get(i).getMaPhong()))
+        			flag = false;
+        	}
+        	if(flag == false) {
+        		dsp.remove(j);
+        		j--;
+        		continue;
+        	}
+        	modelDSPhong.addRow(new Object[] {
+        		phong.getMaPhong(),
+        		phong.getViTri(),
+        		phong.getSoGiuong(),
+        		phong.getSucChua(),
+        		phong.getLoaiPhong().getTenLoaiPhong(),
+        		phong.getLoaiPhong().getDonGia()
+        	});
+        };
+        tblDSPhong.revalidate();
+        tblDSPhong.repaint();
         
+        renderChiTietHDP();
     }
 
-    public JLabel space(int w, int h){
-        JLabel space = new JLabel("");
-        space.setBorder(BorderFactory.createEmptyBorder(h/2, w/2, h/2, w/2));
-        return space;
+    public void renderLoaiPhong() throws RemoteException, MalformedURLException, NotBoundException{
+        modelLoaiPhong.removeAllElements();
+        modelLoaiPhong.addElement("Tất cả");
+        dslp = client.getLoaiPhongDao().getDSLoaiPhong();
+        dslp.forEach(lp -> {
+        	modelLoaiPhong.addElement(lp.getTenLoaiPhong());
+        });
+    }
+    
+    
+    public void renderChiTietHDP() {
+    	tblChiTietDon.clearSelection();
+    	modelChiTietDon.getDataVector().removeAllElements();
+    	cthdp.forEach(phong -> {
+    		modelChiTietDon.addRow(new Object[] {
+        		phong.getMaPhong(),
+        		phong.getViTri(),
+        		phong.getSoGiuong(),
+        		phong.getSucChua(),
+        		phong.getLoaiPhong().getTenLoaiPhong(),
+        		phong.getLoaiPhong().getDonGia()
+        	});
+    	});
+    	
+    	tblChiTietDon.revalidate();
+    	tblChiTietDon.repaint();
     }
 
-    public Font fontSize(int size){
-        return new Font(Font.DIALOG, Font.PLAIN, size);
+    public void renderKhachHang() throws RemoteException, MalformedURLException, NotBoundException{
+        modelTenKH.removeAllElements();
+        modelTenKH.addElement("");
+        dskh = client.getKhachHangDao().getListKhachHang();
+        dskh.forEach(kh -> {
+        	modelTenKH.addElement("#"+kh.getMaKH()+" "+kh.getTenKH());
+        });
+    }
+    
+    public void showKhachHang(KhachHang kh) {
+    	txtTenKH.setText(String.valueOf(kh.getTenKH()));
+    	txtCMND.setText(kh.getCmnd());
+    	txtSoDienThoai.setText(kh.getSoDienThoai());
+    	dpNgayHetHan.setValue(kh.getNgayHetHan());
+    	if(kh.getLoaiKH().toLowerCase().equals("nước ngoài"))
+    		cboLoaiKH.setSelectedIndex(1);
+    	else
+    		cboLoaiKH.setSelectedIndex(0);
+    }
+    
+    public void clear() {
+    	cboKhachHang.setSelectedIndex(0);
+    	txtTenKH.setText("");
+    	txtCMND.setText("");
+    	txtSoDienThoai.setText("");
+    	cboLoaiKH.setSelectedIndex(0);
+    	dpTuNgay.setValueToDay();
+    }
+    
+    public void disableForm() {
+    	txtTenKH.setEnabled(false);
+    	txtCMND.setEnabled(false);
+    	txtSoDienThoai.setEnabled(false);
+    	dpNgayHetHan.btn.setEnabled(false);
+    	cboLoaiKH.setEnabled(false);
+    }
+    
+    public void enableForm() {
+    	cboKhachHang.setSelectedIndex(0);
+    	txtTenKH.setEnabled(true);
+    	txtCMND.setEnabled(true);
+    	txtSoDienThoai.setEnabled(true);
+    	dpNgayHetHan.btn.setEnabled(true);
+    	cboLoaiKH.setEnabled(true);
     }
 
 

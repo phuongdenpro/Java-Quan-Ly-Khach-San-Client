@@ -7,7 +7,7 @@ import java.sql.Date;
 
 public class kDatePicker extends JPanel implements ActionListener {
     private JTextField txt;
-    private JButton btn;
+    public JButton btn;
     private int widthDefault = 150;
     DialogDatePicker f = new DialogDatePicker();
     ImageIcon calenderIcon = new ImageIcon("data/images/calender_16.png");
