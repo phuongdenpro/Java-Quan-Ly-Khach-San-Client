@@ -15,9 +15,10 @@ public class MauDangNhap_UI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	public JTextField txtUsername;
 	public JPasswordField txtPassword;
-	public JPanel contentPane;
+	public JPanel pnMain;
 	public JButton btnLogin;
 	public JButton btnCancel;
+	private JPanel contentPane;
 
 	
 	public static void main(String[] args) {
@@ -35,23 +36,25 @@ public class MauDangNhap_UI extends JFrame {
 		// MauDangNhap_UI dialog = new MauDangNhap_UI();
 		// dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		// dialog.setVisible(true);
-		
+		setLocationRelativeTo(null);
 		setTitle("Đăng nhập");
 		setBounds(100, 100, 450, 300);
-		getContentPane().setLayout(new BorderLayout());
+		contentPane = new JPanel();
+		setContentPane(contentPane);
+		contentPane.setLayout(new BorderLayout());
 		{
-			contentPane = new JPanel(new FlowLayout(FlowLayout.CENTER));
-			// getContentPane().add(panel, BorderLayout.CENTER);
+			pnMain = new JPanel(new FlowLayout(FlowLayout.CENTER));
+			contentPane.add(pnMain, BorderLayout.CENTER);
 			// pnMain.setAlignmentX(Component.CENTER_ALIGNMENT);
 			// pnMain.setAlignmentY(Component.CENTER_ALIGNMENT);
 			
-			contentPane.setLayout(null);
+			pnMain.setLayout(null);
 			{
 				JPanel contentPanel = new JPanel();
 				contentPanel.setLayout(null);
 				contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 				contentPanel.setBounds(0, 0, 434, 183);
-				contentPane.add(contentPanel);
+				pnMain.add(contentPanel);
 				{
 					JLabel lblNewLabel = new JLabel("Đăng Nhập");
 					lblNewLabel.setForeground(Color.BLUE);
@@ -66,7 +69,7 @@ public class MauDangNhap_UI extends JFrame {
 					contentPanel.add(lblNewLabel_1);
 				}
 				{
-					txtUsername = new JTextField();
+					txtUsername = new JTextField("admin");
 					txtUsername.setColumns(10);
 					txtUsername.setBounds(188, 85, 185, 29);
 					contentPanel.add(txtUsername);
@@ -78,7 +81,7 @@ public class MauDangNhap_UI extends JFrame {
 					contentPanel.add(lblNewLabel_2);
 				}
 				{
-					txtPassword = new JPasswordField();
+					txtPassword = new JPasswordField("admin");
 					txtPassword.setColumns(10);
 					txtPassword.setBounds(188, 127, 185, 28);
 					contentPanel.add(txtPassword);
@@ -87,7 +90,7 @@ public class MauDangNhap_UI extends JFrame {
 			{
 				JPanel buttonPane = new JPanel();
 				buttonPane.setBounds(0, 184, 434, 77);
-				contentPane.add(buttonPane);
+				pnMain.add(buttonPane);
 				buttonPane.setLayout(null);
 				{
 					btnLogin = new JButton("Đăng nhập");
@@ -103,6 +106,10 @@ public class MauDangNhap_UI extends JFrame {
 				}
 			}
 		}
+	}
+	
+	public JPanel getContentPane() {
+		return contentPane;
 	}
 
 }

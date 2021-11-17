@@ -87,7 +87,8 @@ public class DatPhong_UI extends JFrame{
 	private kDatePicker dpTuNgay;
 	private kDatePicker dpDenNgay;
 	private JTextField txtSoDienThoai;
-	private List<Phong> cthdp = new ArrayList<Phong>();;
+	private List<Phong> cthdp = new ArrayList<Phong>();
+	private JPanel contentPane;;
     
     
     
@@ -111,7 +112,7 @@ public class DatPhong_UI extends JFrame{
 
     public void renderGUI() {
     	setSize(1350, 600);
-        JPanel contentPane = new JPanel();
+        contentPane = new JPanel();
         setContentPane(contentPane);
         contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         contentPane.setLayout(new BorderLayout(0, 0));
@@ -287,11 +288,11 @@ public class DatPhong_UI extends JFrame{
         btnXemLichDat.setBackground(Color.WHITE);
         panel_6.add(btnXemLichDat);
         
-        JButton btnThem = new JButton("Đặt phòng này");
+        JButton btnThem = new JButton("Thêm phòng này");
         btnThem.setBackground(Color.WHITE);
         panel_6.add(btnThem);
         
-        JButton btnHuy = new JButton("Hủy đặt phòng này");
+        JButton btnHuy = new JButton("Xóa phòng này");
         btnHuy.setBackground(Color.WHITE);
         panel_6.add(btnHuy);
         
@@ -361,19 +362,41 @@ public class DatPhong_UI extends JFrame{
         	}
         	
         	Phong phong = dsp.get(idx);
-        	cthdp.add(phong);
+        	
+        	Date d1 = Ngay.homNay();
+        	Date d2 = Ngay.homNay();
+        	
         	try {
-				renderDSPhong();
-			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-				e1.printStackTrace();
+				d1 = dpTuNgay.getFullDate();
+				d2 = dpDenNgay.getFullDate();
+			} catch (ParseException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
 			}
+        	
+        	
+        	try {
+				if(client.getPhongDao().kiemTraPhongTrong(phong.getMaPhong(), d1, d2) == true) {
+					cthdp.add(phong);
+		        	try {
+						renderDSPhong();
+						return;
+					} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+						e1.printStackTrace();
+					}
+				}
+			} catch (RemoteException | MalformedURLException | NotBoundException e2) {
+				e2.printStackTrace();
+			}
+        	
+        	JOptionPane.showMessageDialog(contentPane, "Phòng này không trống trong thời điểm bạn đặt");
         	
         });
         
         btnHuy.addActionListener((e) -> {
         	int idx = tblChiTietDon.getSelectedRow();
         	if(idx == -1) {
-        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng đã thêm để hủy");
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng trong danh sách phòng đặt để hủy");
         		return ;
         	}
         	
@@ -463,13 +486,6 @@ public class DatPhong_UI extends JFrame{
             			txtSoDienThoai.getText(), 
             			ngayHetHan, 
             			(String) cboLoaiKH.getSelectedItem());
-//            	try {
-//					client.getKhachHangDao().themKhachHang(kh);
-//				} catch (RemoteException | MalformedURLException | NotBoundException e1) {
-//					JOptionPane.showMessageDialog(contentPane, "Có lỗi xảy ra");
-//					e1.printStackTrace();
-//					return;
-//				}
             }else {
             	kh = dskh.get(cboKhachHang.getSelectedIndex()-1);
             }
@@ -484,6 +500,9 @@ public class DatPhong_UI extends JFrame{
             try {
 				if(client.getHoaDonPhongDao().themHoaDonPhong(hdp)) {
 					JOptionPane.showMessageDialog(contentPane, "Đặt phòng thành công");
+					clear();
+					cthdp = new ArrayList<Phong>();
+					renderData();
 					return;
 				}	
 				
@@ -505,6 +524,33 @@ public class DatPhong_UI extends JFrame{
         		}
         	}
         	JOptionPane.showMessageDialog(contentPane, "Không tìm thấy");
+        });
+        
+        tblDSPhong.getSelectionModel().addListSelectionListener((e) -> {
+        	tblChiTietDon.clearSelection();
+        });
+        
+        tblChiTietDon.getSelectionModel().addListSelectionListener((e) -> {
+        	tblDSPhong.clearSelection();
+        });
+        
+        btnXemLichDat.addActionListener((e) -> {
+        	int idx1 = tblDSPhong.getSelectedRow();
+        	int idx2 = tblChiTietDon.getSelectedRow();
+        	if(idx1 == -1 && idx2 == -1) {
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng để xem lịch đặt");
+        		return ;
+        	}
+        	String maPhong = "";
+        	if(idx1 != -1)
+        		maPhong = dsp.get(idx1).getMaPhong();
+        	else
+        		maPhong = cthdp.get(idx2).getMaPhong();
+        	
+        	DialogLichDatPhong dialog = new DialogLichDatPhong();
+        	dialog.setMaPhong(maPhong);
+        	dialog.renderData();
+        	dialog.setVisible(true);
         });
         
         disableForm();
@@ -637,4 +683,8 @@ public class DatPhong_UI extends JFrame{
         JOptionPane.showMessageDialog(pnMain, message);
     }
 
+    
+    public JPanel getContentPane() {
+    	return contentPane;
+    }
 }

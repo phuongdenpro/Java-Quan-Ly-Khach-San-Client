@@ -382,5 +382,9 @@ public class TrangChu_UI extends JFrame{
         space.setBorder(BorderFactory.createEmptyBorder(h/2, w/2, h/2, w/2));
         return space;
     }
+    
+    public JPanel getContentPane() {
+		return contentPane;
+    }
 
 }

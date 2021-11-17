@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.prefs.NodeChangeEvent;
 
-public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSelectionListener{
+public class QuanLyKhachSan_UI extends JFrame{
     // thêm các page vô đây cho dễ nhớ
 
     private String[] nav = new String[] { "Trang chu", "Dat phong", "Quan ly hoa don phong", "Quan ly hoa don dich vu",
@@ -33,10 +33,11 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
     private ThongKeKhachHang_UI pageTKeKhachHang = new ThongKeKhachHang_UI();
     private HoaDonDichVu_UI pageHDDichVu = new HoaDonDichVu_UI();
     private QLPhong_UI pageQLPhong = new QLPhong_UI();
+    private QLLoaiPhong_UI pageQLLoaiPhong = new QLLoaiPhong_UI();
     private MauDangNhap_UI pageLogin = new MauDangNhap_UI();
 
     
-    private JPanel pnMain = new JPanel();
+    private JPanel contentPane = new JPanel();
     private JFrame popup = new JFrame();
     // components
     private JMenuBar menuBar;
@@ -46,91 +47,47 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
 
     // private JPanel pnContainer;
     private ImageIcon icon_quest = new ImageIcon("data/images/question.png");
+	private JMenuItem itemQLHD;
+	private JMenuItem itemQLLoaiPhong;
+	private JMenuItem itemQLDatPhong;
+    
+    public static void main(String[] args) throws Exception {
+        System.out.println("start!");
+        new QuanLyKhachSan_UI();
+    }
+    
     public QuanLyKhachSan_UI() throws IOException, NotBoundException {
     	pageDatPhong = new DatPhong_UI();
     	
-    	
+//    	setVisible(true);
         setTitle("Quản Lý Khách Sạn");
-        setSize(1000, 700);
+        setSize(1300, 700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+//        setResizable(false);
 
-        createMenuGUI();
-        createGUI();
-
-    }
-
-    public QuanLyKhachSan_UI(int index) throws IOException, NotBoundException {
-    	pageDatPhong = new DatPhong_UI();
-    	
-        setTitle("Quản Lý Khách Sạn");
-        setSize(1000, 700);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        // setResizable(false);
-
-        createMenuGUI();
-        createGUI();
-        indx_nav = index;
+        this.setVisible(false);
+        pageLogin.setVisible(true);
+        
+        handleLogin();
+//        createMenuGUI();
+//        renderMain(pageLogin.getContentPane(), "dangnhap");
 
     }
 
-    public void createGUI() {
-//        // xóa hết vẽ lại
-//        this.remove(pnMain);
-//        this.revalidate();
-//        this.repaint();
-//        popup.dispose();
-//        // hiển thị các page ở đây
-//        if(indx_nav == -1){ // login
-//            menuBar.setVisible(false);
-//            this.setSize(450, 350);
-//            setLocationRelativeTo(null);
-//            pnMain = pageLogin.pnMain;
-//            this.add(pnMain, BorderLayout.CENTER);
-//            this.revalidate();
-//            this.repaint();
-//            handleEventBtnLogin();
-//            return;
-//        }
-//        setSize(1000, 700);
-//        if (indx_nav == 0) {// trang chủ
-//            pageTrangChu.start();
-//            pnMain = pageTrangChu.contentPane;
-//            handleEventTrangChu();
-//            handleEventThayDoiLoaiPhong();
-//        } else if (indx_nav == 1) { // trang đặt phòng
-//            pageDatPhong.start();
-//            pnMain = pageDatPhong.pnMain;
-//            // pageDatPhong.renderDSPhong();
-//            handleEventTraPhong();
-//            // pageDatPhong.renderHoaDon();
-//        } else if (indx_nav == 2) { // hóa đơn phòng
-//            pageThanhToan.start();
-//            pnMain = pageThanhToan.pnMain;
-//
-//        } else if (indx_nav == 3) { //
-//            pnMain = pageQLDichVu.pnMain;
-//
-//        } else if (indx_nav == 4) { //
-//            pnMain = pageQLKhachHang.pnMain;
-//        } else if (indx_nav == 5) { //
-//            pnMain = pageTKeDichVu.pnMain;
-//        } else if (indx_nav == 6) { //
-//            pnMain = pageTKeKhachHang.pnMain;
-//        } else if (indx_nav == 7) {// quản lý hóa đơn dịch vụ
-//            pageHDDichVu.start();
-//            pnMain = pageHDDichVu.pnMain;
-//        } else if (indx_nav == 8) {
-//            pnMain = pageQLPhong.pnMain;
-//        }
-//        
-//        this.add(pnMain, BorderLayout.CENTER);
-//        this.revalidate();
-//        this.repaint();
 
-    }
+    public void renderMain(JPanel contentPane, String tab) {
+		this.remove(this.contentPane);
+		this.revalidate();
+		this.repaint();
+		this.contentPane = contentPane;
+		this.setContentPane(contentPane);
+		this.revalidate();
+		this.repaint();
+
+		System.out.println("-> " + tab);
+
+	}
 
     
 
@@ -147,27 +104,32 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
         // trang chu
         menuDatPhong = new JMenu("Đặt phòng");
         menuBar.add(menuDatPhong);
-        itemDatPhong = new JMenuItem("Đặt phòng");
+        itemQLDatPhong = new JMenuItem("Quản lý đặt phòng");
+        menuDatPhong.add(itemQLDatPhong);
+        itemDatPhong = new JMenuItem("Đặt phòng mới");
         menuDatPhong.add(itemDatPhong);
 
         // quản lý hóa đơn
-        menuQLHoaDon = new JMenu("Quản lý hóa đơn");
+        menuQLHoaDon = new JMenu("Hóa đơn");
         menuBar.add(menuQLHoaDon);
-        itemQLHDDV = new JMenuItem("Quản lý hóa đơn dịch vụ");
+        itemQLHD = new JMenuItem("Quản lý hóa đơn phòng");
         itemQLHDDichVu = new JMenuItem("Quản lý hóa đơn dịch vụ");
-        // menuQLHoaDon.add(itemQLHDPhong);
+        
+        menuQLHoaDon.add(itemQLHD);
         menuQLHoaDon.add(itemQLHDDichVu);
 
         // quản lý dịch vụ
-        menuQLDichVu = new JMenu("Quản lý dịch vụ");
+        menuQLDichVu = new JMenu("Dịch vụ");
         menuBar.add(menuQLDichVu);
         itemQLPhong = new JMenuItem("Quản lý phòng");
+        itemQLLoaiPhong = new JMenuItem("Quản lý loại phòng");
         itemQLDichVu = new JMenuItem("Quản lý dịch vụ");
         menuQLDichVu.add(itemQLPhong);
+        menuQLDichVu.add(itemQLLoaiPhong);
         menuQLDichVu.add(itemQLDichVu);
 
         // quản lý khách hàng
-        menuQLKhachHang = new JMenu("Quản lý khách hàng");
+        menuQLKhachHang = new JMenu("Khách hàng");
         menuBar.add(menuQLKhachHang);
         itemQLKhachHang = new JMenuItem("Quản lý khách hàng");
         menuQLKhachHang.add(itemQLKhachHang);
@@ -181,15 +143,27 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
         menuThongKe.add(itemThongKeKH);
 
         // thêm sự kiện click
-        itemTrangChu.addActionListener(this);
-        itemDatPhong.addActionListener(this);
-        itemQLHDDV.addActionListener(this);
-        itemQLHDDichVu.addActionListener(this);
-        itemQLPhong.addActionListener(this);
-        itemQLDichVu.addActionListener(this);
-        itemQLKhachHang.addActionListener(this);
-        itemThongKeDV.addActionListener(this);
-        itemThongKeKH.addActionListener(this);
+        itemTrangChu.addActionListener((e) -> {
+        	renderMain(pageTrangChu.getContentPane(), "trang chu");
+        });
+        itemQLDatPhong.addActionListener((e) -> {
+//        	renderMain(pageDatPhong.getContentPane(), "dat phong");
+        });
+        itemDatPhong.addActionListener((e) -> {
+        	renderMain(pageDatPhong.getContentPane(), "dat phong");
+        });
+//        itemQLHDDV.addActionListener(this);
+//        itemQLHDDichVu.addActionListener(this);
+        itemQLPhong.addActionListener((e) -> {
+        	renderMain(pageQLPhong.getContentPane(), "phong");
+        });
+        itemQLLoaiPhong.addActionListener((e) -> {
+        	renderMain(pageQLLoaiPhong.getContentPane(), "loai phong");
+        });
+//        itemQLDichVu.addActionListener(this);
+//        itemQLKhachHang.addActionListener(this);
+//        itemThongKeDV.addActionListener(this);
+//        itemThongKeKH.addActionListener(this);
 
     }
 
@@ -206,10 +180,7 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
         pMenu.add(space(10, 6));
     }
 
-    public static void main(String[] args) throws Exception {
-        System.out.println("start!");
-        new QuanLyKhachSan_UI().setVisible(true);
-    }
+
 
     private void handleEventThayDoiLoaiPhong() {
         pageTrangChu.cboLP.addActionListener(new ActionListener(){
@@ -241,7 +212,7 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
         popup.setTitle("Chọn hóa đơn dịch vụ");
         popup.setSize(500, 400);
         popup.setResizable(false);
-        popup.setLocationRelativeTo(pnMain);
+        popup.setLocationRelativeTo(contentPane);
         popup.setAlwaysOnTop(true);
         JPanel pn_p_main = new JPanel();
         popup.add(pn_p_main);
@@ -278,7 +249,7 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
 
     }
 
-    private void handleEventBtnLogin() {
+    private void handleLogin() {
         pageLogin.btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.println(pageLogin.txtPassword.getPassword());
@@ -286,11 +257,15 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
                 && pageLogin.txtPassword.getText().equals("admin")){
                     setSize(1000, 700);
                     setLocationRelativeTo(null);
+                    
+                    createMenuGUI();
                     menuBar.setVisible(true);
-                    indx_nav = 0;
-                    createGUI();
+                    pageLogin.setVisible(false);
+                    setVisible(true);
+                    
+                    renderMain(pageTrangChu.getContentPane(), "trang chu");
                 }else{
-                    JOptionPane.showMessageDialog(pnMain, "Sai tài khoản hoặc mật khẩu");;
+                    JOptionPane.showMessageDialog(contentPane, "Sai tài khoản hoặc mật khẩu");;
                     pageLogin.txtUsername.requestFocus();
                 }
             }
@@ -302,61 +277,9 @@ public class QuanLyKhachSan_UI extends JFrame implements ActionListener, ListSel
             }
         });
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object obj = e.getSource();
-
-        if (obj == itemTrangChu) { // trang chủ
-            System.out.println("-> Trang chu");
-            indx_nav = 0;
-            createGUI();
-            
-            
-        } else if (obj == itemDatPhong) {// Đặt phòng
-            System.out.println("-> Dat phong");
-            indx_nav = 1;
-            pageDatPhong.maPhong = "0";
-            createGUI();
-        } else if (obj == itemQLHDDV) {// hóa đơn dich vu
-            System.out.println("-> Hoa don dich vu");
-            indx_nav = 9;
-            createGUI();
-
-        } else if (obj == itemQLDichVu) {// quan ly dich vu
-            System.out.println("-> Dich vu");
-            indx_nav = 3;
-            createGUI();
-        } else if (obj == itemQLKhachHang) {// quan ly khach hang
-            System.out.println("-> Khach hang");
-            indx_nav = 4;
-            createGUI();
-        } else if (obj == itemThongKeDV) {// Thong ke dich vu
-            System.out.println("-> Thong ke dich vu");
-            indx_nav = 5;
-            createGUI();
-        } else if (obj == itemThongKeKH) {// Thong ke dich vu
-            System.out.println("-> Thong ke khach hang");
-            indx_nav = 6;
-            createGUI();
-        } else if (obj == itemQLHDDichVu) {
-            System.out.println("Hoa don dich vu");
-            indx_nav = 7;
-            createGUI();
-        } else if (obj == itemQLPhong){
-            System.out.println("Quan ly phong va loai phong");
-            indx_nav = 8;
-            createGUI();
-        }
-        // thêm tương tự như phía trên, indx_nav tương ứng với mảng nav trên đầu
-    }
 
     public void print(String msg){
         System.out.println(msg);
-    }
-
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        
     }
 
     // public void check

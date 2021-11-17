@@ -81,6 +81,7 @@ public class QLPhong_UI extends JFrame{
 	private DefaultComboBoxModel<String> modelLoc;
 	private DefaultComboBoxModel<String> modelLoaiPhong;
 	private List<LoaiPhong> dslp;
+	private JButton btnXoa;
     
 
     public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException {
@@ -96,7 +97,7 @@ public class QLPhong_UI extends JFrame{
 		}
     	
         setSize(1000, 670);
-        setTitle("Quản Lý Phòng Và Loại Phòng");
+        setTitle("Quản Lý Phòng");
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -105,7 +106,7 @@ public class QLPhong_UI extends JFrame{
         setContentPane(contentPane);
         contentPane.setLayout(new BorderLayout(0, 0));
 
-        JLabel lbTitle = new JLabel("Quản Lý Phòng và Loại Phòng");
+        JLabel lbTitle = new JLabel("Quản Lý Phòng");
         lbTitle.setHorizontalAlignment(SwingConstants.CENTER);
         lbTitle.setFont(new Font("Dialog", Font.BOLD, 20));
         contentPane.add(lbTitle, BorderLayout.NORTH);
@@ -219,6 +220,7 @@ public class QLPhong_UI extends JFrame{
         
         panel_9 = new JPanel();
         pnBL.add(panel_9);
+        panel_9.setLayout(new GridLayout(0, 2, 10, 5));
         
         btnThemP = new JButton("Thêm", null);
         btnThemP.setBackground(Color.WHITE);
@@ -227,6 +229,10 @@ public class QLPhong_UI extends JFrame{
         btnSuaP = new JButton("Sửa", null);
         btnSuaP.setBackground(Color.WHITE);
         panel_9.add(btnSuaP);
+        
+        btnXoa = new JButton("Xóa", null);
+        btnXoa.setBackground(Color.WHITE);
+        panel_9.add(btnXoa);
         
         btnLamMoi = new JButton("Làm mới", null);
         btnLamMoi.setBackground(Color.WHITE);
@@ -378,6 +384,40 @@ public class QLPhong_UI extends JFrame{
             
             JOptionPane.showMessageDialog(contentPane, "Sửa thất bại");
         });
+        
+        btnXoa.addActionListener((e) -> {
+        	int idx = table.getSelectedRow();
+        	if(idx != -1) {
+        		String maPhong = dsp.get(idx).getMaPhong();
+        		
+        		try {
+					if(client.getPhongDao().xoaPhong(maPhong)) {
+						JOptionPane.showMessageDialog(contentPane, "Xóa thành công");
+						renderData();
+						return;
+					}
+				} catch (RemoteException | MalformedURLException | NotBoundException e1) {
+					e1.printStackTrace();
+				}
+        		
+        		JOptionPane.showMessageDialog(contentPane, "Xóa thất bại");
+        	}
+        });
+        
+        btnXemLichDat.addActionListener((e) -> {
+        	int idx = table.getSelectedRow();
+        	if(idx == -1) {
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng để xem lịch đặt");
+        		return ;
+        	}
+        	String maPhong = dsp.get(idx).getMaPhong();
+        	
+        	DialogLichDatPhong dialog = new DialogLichDatPhong();
+        	dialog.setMaPhong(maPhong);
+        	dialog.renderData();
+        	dialog.setVisible(true);
+        });
+        
         renderData();
     }
     
@@ -484,5 +524,9 @@ public class QLPhong_UI extends JFrame{
         else if (tinhTrang == 2)
             result = "Đã cho thuê";
         return result;
+    }
+    
+    public JPanel getContentPane() {
+		return contentPane;
     }
 }
