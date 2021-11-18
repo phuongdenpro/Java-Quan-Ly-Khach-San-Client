@@ -19,7 +19,7 @@ public class HoaDonDichVu_UI extends JFrame{
 	private DefaultTableModel modelHD, modelDV;
 	String[] colsHD = { "Mã hoá đơn", "Mã khách hàng", "Thời gian đặt", "Tổng tiền", "Tình trạng" };
 	String[] colsDV = { "Mã dịch vụ", "Tên dịch vụ", "Số lượng", "Đơn giá", "Thời gian đặt", "Mã hoá đơn" };
-	public JPanel pnMain;
+	public JPanel contentPane;
 	private JTable tableHDDV;
 	private JTable tableDV;
 	private JScrollPane scrollPane;
@@ -43,7 +43,7 @@ public class HoaDonDichVu_UI extends JFrame{
 	public static void main(String[] args) {
 		HoaDonDichVu_UI hoaDonDichVu_UI = new HoaDonDichVu_UI();
 
-		hoaDonDichVu_UI.start();
+//		hoaDonDichVu_UI.start();
 		hoaDonDichVu_UI.setVisible(true);
 	}
 
@@ -51,26 +51,23 @@ public class HoaDonDichVu_UI extends JFrame{
 		
 
 		setTitle("Hoá đơn dịch vụ");
-		setSize(1000, 670);
+		setSize(1300, 650);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-
 		
+		renderGUI();
 	}
 
-	public void start(){
-		pnMain = renderGUI();
-	}
 
-	public JPanel renderGUI(){
-		pnMain = new JPanel();
-		pnMain.setBounds(0, 0, 584, 411);
-		getContentPane().add(pnMain);
+	public void renderGUI(){
+		contentPane = new JPanel();
+		contentPane.setBounds(0, 0, 1300, 650);
+		setContentPane(contentPane);
 
 		JLabel lbTitle = new JLabel("Hoá Đơn Thanh Toán Dịch Vụ");
 		lbTitle.setBounds(335, 11, 348, 30);
 		lbTitle.setFont(new Font("Tahoma", Font.BOLD, 20));
-		pnMain.add(lbTitle);
+		contentPane.add(lbTitle);
 
 		modelHD = new DefaultTableModel(colsHD, 0) {
 			/**
@@ -97,14 +94,14 @@ public class HoaDonDichVu_UI extends JFrame{
 				// Không cho chỉnh sửa trên table
 			}
 		};
-		pnMain.setLayout(null);
+		contentPane.setLayout(null);
 
 		JPanel pn = new JPanel();
 		pn.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"\u0110\u1EB7t d\u1ECBch v\u1EE5", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pn.setBounds(10, 65, 342, 286);
-		pnMain.add(pn);
+		contentPane.add(pn);
 		pn.setLayout(null);
 
 		JLabel lbMaKH = new JLabel("Mã khách hàng:");
@@ -182,14 +179,14 @@ public class HoaDonDichVu_UI extends JFrame{
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"D\u1ECBch v\u1EE5 kh\u00E1ch h\u00E0ng \u0111\u00E3 \u0111\u1EB7t", TitledBorder.LEADING,
 				TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(362, 64, 614, 251);
-		pnMain.add(panel);
+		panel.setBounds(362, 64, 912, 251);
+		contentPane.add(panel);
 		panel.setLayout(null);
 
 		tableDV = new JTable(modelDV);
 		JScrollPane scDV = new JScrollPane(tableDV, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scDV.setBounds(10, 29, 594, 211);
+		scDV.setBounds(10, 29, 892, 211);
 		tableDV.getColumnModel().getColumn(1).setPreferredWidth(105);
 		panel.add(scDV);
 
@@ -198,14 +195,14 @@ public class HoaDonDichVu_UI extends JFrame{
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"Danh s\u00E1ch ho\u00E1 \u0111\u01A1n d\u1ECBch v\u1EE5", TitledBorder.LEADING, TitledBorder.TOP, null,
 				new Color(0, 0, 0)));
-		panel_1.setBounds(362, 326, 614, 307);
-		pnMain.add(panel_1);
+		panel_1.setBounds(362, 326, 912, 307);
+		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
 		tableHDDV = new JTable(modelHD);
 		JScrollPane scHD = new JScrollPane(tableHDDV, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scHD.setBounds(10, 57, 594, 239);
+		scHD.setBounds(10, 57, 892, 239);
 		panel_1.add(scHD);
 
 		JLabel lbTimMaHDDV = new JLabel("Mã hoá đơn dịch vụ:");
@@ -232,7 +229,6 @@ public class HoaDonDichVu_UI extends JFrame{
 		btnBoChon.setBounds(482, 28, 89, 23);
 		panel_1.add(btnBoChon);
 
-		return pnMain;
 		
 	}
 
@@ -265,5 +261,9 @@ public class HoaDonDichVu_UI extends JFrame{
 			}
 		}
 		return true;
+	}
+	
+	public JPanel getContentPane() {
+		return contentPane;
 	}
 }
