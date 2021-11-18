@@ -448,7 +448,7 @@ public class QLPhong_UI extends JFrame{
         		phong.getSoGiuong(),
         		phong.getSucChua(),
         		phong.getLoaiPhong().getTenLoaiPhong(),
-        		phong.getLoaiPhong().getDonGia()
+        		Currency.format(phong.getLoaiPhong().getDonGia())
         	});
         };
         table.revalidate();

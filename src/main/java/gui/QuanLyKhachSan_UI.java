@@ -25,15 +25,22 @@ public class QuanLyKhachSan_UI extends JFrame{
 
     // khai báo các lớp giao diện ở đây
     private TrangChu_UI pageTrangChu = new TrangChu_UI();
+    
+    private QuanLyHoaDonPhong_UI pageHoaDonPhong = new QuanLyHoaDonPhong_UI();
     private DatPhong_UI pageDatPhong;
     private ThanhToan_UI pageThanhToan = new ThanhToan_UI();
+    private HoaDonDichVu_UI pageHDDichVu = new HoaDonDichVu_UI();
+    
     private QuanLyDichVu_UI pageQLDichVu = new QuanLyDichVu_UI();
+    
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
+    
     private ThongKeDichVu_UI pageTKeDichVu = new ThongKeDichVu_UI();
     private ThongKeKhachHang_UI pageTKeKhachHang = new ThongKeKhachHang_UI();
-    private HoaDonDichVu_UI pageHDDichVu = new HoaDonDichVu_UI();
+    
     private QLPhong_UI pageQLPhong = new QLPhong_UI();
     private QLLoaiPhong_UI pageQLLoaiPhong = new QLLoaiPhong_UI();
+    
     private MauDangNhap_UI pageLogin = new MauDangNhap_UI();
 
     
@@ -47,9 +54,10 @@ public class QuanLyKhachSan_UI extends JFrame{
 
     // private JPanel pnContainer;
     private ImageIcon icon_quest = new ImageIcon("data/images/question.png");
-	private JMenuItem itemQLHD;
+	private JMenuItem itemQLHDPhong;
 	private JMenuItem itemQLLoaiPhong;
 	private JMenuItem itemQLDatPhong;
+	private JMenuItem itemSDDichVu;
     
     public static void main(String[] args) throws Exception {
         System.out.println("start!");
@@ -100,23 +108,19 @@ public class QuanLyKhachSan_UI extends JFrame{
         menuBar.add(menuTrangChu);
         itemTrangChu = new JMenuItem("Trang chủ");
         menuTrangChu.add(itemTrangChu);
-
-        // trang chu
-        menuDatPhong = new JMenu("Đặt phòng");
-        menuBar.add(menuDatPhong);
-        itemQLDatPhong = new JMenuItem("Quản lý đặt phòng");
-        menuDatPhong.add(itemQLDatPhong);
-        itemDatPhong = new JMenuItem("Đặt phòng mới");
-        menuDatPhong.add(itemDatPhong);
+        
 
         // quản lý hóa đơn
         menuQLHoaDon = new JMenu("Hóa đơn");
         menuBar.add(menuQLHoaDon);
-        itemQLHD = new JMenuItem("Quản lý hóa đơn phòng");
+        itemQLHDPhong = new JMenuItem("Quản lý hóa đơn phòng");
+        itemDatPhong = new JMenuItem("Đặt phòng mới");
         itemQLHDDichVu = new JMenuItem("Quản lý hóa đơn dịch vụ");
-        
-        menuQLHoaDon.add(itemQLHD);
+        itemSDDichVu = new JMenuItem("Sử dụng dịch vụ");
+        menuQLHoaDon.add(itemQLHDPhong);
+        menuQLHoaDon.add(itemDatPhong);
         menuQLHoaDon.add(itemQLHDDichVu);
+        menuQLHoaDon.add(itemSDDichVu);
 
         // quản lý dịch vụ
         menuQLDichVu = new JMenu("Dịch vụ");
@@ -146,9 +150,11 @@ public class QuanLyKhachSan_UI extends JFrame{
         itemTrangChu.addActionListener((e) -> {
         	renderMain(pageTrangChu.getContentPane(), "trang chu");
         });
-        itemQLDatPhong.addActionListener((e) -> {
-//        	renderMain(pageDatPhong.getContentPane(), "dat phong");
+        
+        itemQLHDPhong.addActionListener((e) -> {
+        	renderMain(pageHoaDonPhong.getContentPane(), "quan ly hoa don phong");
         });
+        
         itemDatPhong.addActionListener((e) -> {
         	renderMain(pageDatPhong.getContentPane(), "dat phong");
         });
@@ -160,7 +166,9 @@ public class QuanLyKhachSan_UI extends JFrame{
         itemQLLoaiPhong.addActionListener((e) -> {
         	renderMain(pageQLLoaiPhong.getContentPane(), "loai phong");
         });
-//        itemQLDichVu.addActionListener(this);
+        itemQLHDDichVu.addActionListener((e) -> {
+        	renderMain(pageHDDichVu.getContentPane(), "hoa don dich vu");
+        });
 //        itemQLKhachHang.addActionListener(this);
 //        itemThongKeDV.addActionListener(this);
 //        itemThongKeKH.addActionListener(this);

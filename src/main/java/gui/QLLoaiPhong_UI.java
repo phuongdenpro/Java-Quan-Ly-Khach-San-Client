@@ -308,7 +308,7 @@ public class QLLoaiPhong_UI extends JFrame{
         	model.addRow(new Object[] {
         		loaiPhong.getMaLoaiPhong(),
         		loaiPhong.getTenLoaiPhong(),
-        		loaiPhong.getDonGia()
+        		Currency.format(loaiPhong.getDonGia())
         	});
         };
         table.revalidate();
