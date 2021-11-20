@@ -494,7 +494,7 @@ public class DatPhong_UI extends JFrame{
             
             List<ChiTietHoaDonPhong> dscthdp = new ArrayList<ChiTietHoaDonPhong>();
             cthdp.forEach(phong -> {
-            	dscthdp.add(new ChiTietHoaDonPhong(phong));
+            	dscthdp.add(new ChiTietHoaDonPhong(phong, phong.getLoaiPhong().getDonGia()));
             });
             HoaDonPhong hdp = new HoaDonPhong(tuNgay, denNgay, kh, dscthdp);
             try {

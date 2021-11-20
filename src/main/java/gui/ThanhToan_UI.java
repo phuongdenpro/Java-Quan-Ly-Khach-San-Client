@@ -86,15 +86,15 @@ public class ThanhToan_UI extends JFrame{
 			e.printStackTrace();
 		}
     	
-    	try {
-        	hdp = client.getHoaDonPhongDao().getHDPbyMaHD(1);
-        	dsCTHDP = client.getChiTietHoaDonPhongDao().getListChiTietHDPByMaHD(hdp.getMaHD());
-			hddv = client.getHoaDonDVDao().getHDDVbyMaHDDV(1);
-			dsCTDV = client.getChiTietDVDao().getListChiTietDVByMaHDDV(hddv.getMaHDDV());
-		} catch (RemoteException | MalformedURLException | NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//    	try {
+//        	hdp = client.getHoaDonPhongDao().getHDPbyMaHD(1);
+//        	dsCTHDP = client.getChiTietHoaDonPhongDao().getListChiTietHDPByMaHD(hdp.getMaHD());
+//			hddv = client.getHoaDonDVDao().getHDDVbyMaHDDV(1);
+//			dsCTDV = client.getChiTietDVDao().getListChiTietDVByMaHDDV(hddv.getMaHDDV());
+//		} catch (RemoteException | MalformedURLException | NotBoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
     	start();
     }
 
@@ -102,7 +102,7 @@ public class ThanhToan_UI extends JFrame{
         
         
     	renderGUI();
-    	renderData();
+//    	renderData();
     }
 
     public void renderGUI() {

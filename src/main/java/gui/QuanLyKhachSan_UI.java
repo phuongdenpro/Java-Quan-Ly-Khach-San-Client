@@ -29,7 +29,8 @@ public class QuanLyKhachSan_UI extends JFrame{
     private QuanLyHoaDonPhong_UI pageHoaDonPhong = new QuanLyHoaDonPhong_UI();
     private DatPhong_UI pageDatPhong;
     private ThanhToan_UI pageThanhToan = new ThanhToan_UI();
-    private HoaDonDichVu_UI pageHDDichVu = new HoaDonDichVu_UI();
+    private QuanLyHoaDonDichVu_UI pageHDDichVu = new QuanLyHoaDonDichVu_UI();
+    private SuDungDV_UI pageSuDung = new SuDungDV_UI();
     
     private QuanLyDichVu_UI pageQLDichVu = new QuanLyDichVu_UI();
     
@@ -158,16 +159,18 @@ public class QuanLyKhachSan_UI extends JFrame{
         itemDatPhong.addActionListener((e) -> {
         	renderMain(pageDatPhong.getContentPane(), "dat phong");
         });
-//        itemQLHDDV.addActionListener(this);
-//        itemQLHDDichVu.addActionListener(this);
+    
+	    itemQLHDDichVu.addActionListener((e) -> {
+	    	renderMain(pageHDDichVu.getContentPane(), "hoa don dich vu");
+	    });
+        itemSDDichVu.addActionListener((e) -> {
+        	renderMain(pageSuDung.getContentPane(), "su dung dich vu");
+        });
         itemQLPhong.addActionListener((e) -> {
         	renderMain(pageQLPhong.getContentPane(), "phong");
         });
         itemQLLoaiPhong.addActionListener((e) -> {
         	renderMain(pageQLLoaiPhong.getContentPane(), "loai phong");
-        });
-        itemQLHDDichVu.addActionListener((e) -> {
-        	renderMain(pageHDDichVu.getContentPane(), "hoa don dich vu");
         });
 //        itemQLKhachHang.addActionListener(this);
 //        itemThongKeDV.addActionListener(this);
@@ -273,7 +276,7 @@ public class QuanLyKhachSan_UI extends JFrame{
                     
                     renderMain(pageTrangChu.getContentPane(), "trang chu");
                 }else{
-                    JOptionPane.showMessageDialog(contentPane, "Sai tài khoản hoặc mật khẩu");;
+                    JOptionPane.showMessageDialog(contentPane, "Sai tài khoản hoặc mật khẩu");
                     pageLogin.txtUsername.requestFocus();
                 }
             }
