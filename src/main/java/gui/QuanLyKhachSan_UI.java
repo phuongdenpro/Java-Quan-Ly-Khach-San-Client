@@ -37,7 +37,7 @@ public class QuanLyKhachSan_UI extends JFrame{
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
     
     private ThongKeDichVu_UI pageTKeDichVu = new ThongKeDichVu_UI();
-    private ThongKeKhachHang_UI pageTKeKhachHang = new ThongKeKhachHang_UI();
+    private ThongKeDoanhThu_UI pageTKeKhachHang = new ThongKeDoanhThu_UI();
     
     private QLPhong_UI pageQLPhong = new QLPhong_UI();
     private QLLoaiPhong_UI pageQLLoaiPhong = new QLLoaiPhong_UI();
