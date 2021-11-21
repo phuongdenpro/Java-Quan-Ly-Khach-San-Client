@@ -61,6 +61,8 @@ private int soLuongSP = 0;
 
 	private Client client;
 
+	private JLabel lblTongSoDV;
+
 	
 	 public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException {
 	        new ThongKeDichVu_UI().setVisible(true);
@@ -159,7 +161,7 @@ private int soLuongSP = 0;
 			
 			panel_1.setLayout(new BorderLayout(0, 0));
 			
-			String[] cols = {"STT", "Mã khách hàng", "Tên khách hàng","CMND","Ngày hết hạn", "Số điện thoại","Loại khách hàng", "Số lần đặt phòng", "Số tiền đã trả"};
+			String[] cols = {"STT", "Mã dịch vụ", "Tên dịch vụ", "Đơn giá","Số lần đặt", "Tổng tiền"};
 			model = new DefaultTableModel(cols, 0);
 			table = new JTable(model);
 			JScrollPane scrollPane = new JScrollPane(table);
@@ -171,12 +173,23 @@ private int soLuongSP = 0;
 			JPanel panel_5 = new JPanel();
 			panel_4.add(panel_5);
 			
-			panel_5.add(Box.createHorizontalStrut(350));
+			panel_5.add(Box.createHorizontalStrut(250));
+			
+			JLabel lblTongDV = new JLabel("Tổng số dịch vụ: ");
+			lblTongDV.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			panel_5.add(lblTongDV);
+			
+			lblTongSoDV = new JLabel("0");
+			lblTongSoDV.setPreferredSize(new Dimension(50,30));
+			lblTongSoDV.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			panel_5.add(lblTongSoDV);
+			
 			JLabel lblTong = new JLabel("Tổng số lần bán: ");
 			lblTong.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			panel_5.add(lblTong);
 			
 			lblTongSo = new JLabel("0");
+			lblTongSo.setPreferredSize(new Dimension(50,30));
 			lblTongSo.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			panel_5.add(lblTongSo);
 			
@@ -188,9 +201,10 @@ private int soLuongSP = 0;
 			panel_5_1.add(lblTngSTin);
 			
 			lblTongSoTien = new JLabel("0");
+			lblTongSoTien.setPreferredSize(new Dimension(50,30));
 			lblTongSoTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			panel_5_1.add(lblTongSoTien);
-			panel_5_1.add(Box.createHorizontalStrut(300));
+			panel_5_1.add(Box.createHorizontalStrut(200));
 			JButton btnIn = new JButton("In báo cáo", new ImageIcon("data/images/printer.png"));
 			panel_5_1.add(btnIn);
 			
