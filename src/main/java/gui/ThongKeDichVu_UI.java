@@ -97,7 +97,7 @@ private int soLuongSP = 0;
 			
 			JPanel panel_2 = new JPanel();
 			panel.add(panel_2);
-			
+			panel_2.add(Box.createHorizontalStrut(50));
 			JLabel lblThongKeTheo = new JLabel("Thống kê theo: ");
 			panel_2.add(lblThongKeTheo);
 			
@@ -117,42 +117,28 @@ private int soLuongSP = 0;
 			
 			
 			dpTuNgay = new kDatePicker(100);
-			dpTuNgay.setPreferredSize(new Dimension(100, 25));
+			dpTuNgay.setPreferredSize(new Dimension(100, 22));
 			//dpTuNgay = new kDatePicker();
 			panel_2.add(dpTuNgay);
 			
-			JLabel lblToiNgay = new JLabel("Tới ngày");
+			JLabel lblToiNgay = new JLabel("Tới ngày:");
 			panel_2.add(lblToiNgay);
 			
 			dpToiNgay = new kDatePicker(100);
-			dpToiNgay.setPreferredSize(new Dimension(100, 25));
+			dpToiNgay.setPreferredSize(new Dimension(100, 22));
 			//dpToiNgay = new kDatePicker();
 			panel_2.add(dpToiNgay);
 			
-			JPanel panel_6 = new JPanel();
-			panel_2.add(panel_6);
 			
-			JLabel lblSoLuongToiDa = new JLabel("Số lượng KH tối đa: ");
-			panel_6.add(lblSoLuongToiDa);
-			
-			modelLimit = new DefaultComboBoxModel<Integer>();
-			cboLimit = new JComboBox(modelLimit);
-			cboLimit.setEditable(true);
-			panel_6.add(cboLimit);
-			modelLimit.addElement(10);
-			modelLimit.addElement(25);
-			modelLimit.addElement(50);
-			modelLimit.addElement(100);
-			modelLimit.addElement(500);
-			
+			panel_2.add(Box.createHorizontalStrut(50));
 			JButton btnThongKe = new JButton("Thống kê", new ImageIcon("data/images/statistics.png"));
-			btnThongKe.setPreferredSize(new Dimension(150, 25));
+			btnThongKe.setPreferredSize(new Dimension(160, 25));
 
 			btnThongKe.setBackground(Color.WHITE);
 			panel_2.add(btnThongKe);
 			
 			JButton btnLamMoi = new JButton("Làm mới dữ liệu", new ImageIcon("data/images/refresh.png"));
-			btnLamMoi.setPreferredSize(new Dimension(200, 25));
+			btnLamMoi.setPreferredSize(new Dimension(160, 25));
 			btnLamMoi.setBackground(Color.WHITE);
 			panel_2.add(btnLamMoi);
 			
