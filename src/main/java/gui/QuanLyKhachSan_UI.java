@@ -28,7 +28,6 @@ public class QuanLyKhachSan_UI extends JFrame{
     
     private QuanLyHoaDonPhong_UI pageHoaDonPhong = new QuanLyHoaDonPhong_UI();
     private DatPhong_UI pageDatPhong;
-    private ThanhToan_UI pageThanhToan = new ThanhToan_UI();
     private QuanLyHoaDonDichVu_UI pageHDDichVu = new QuanLyHoaDonDichVu_UI();
     private SuDungDV_UI pageSuDung = new SuDungDV_UI();
     

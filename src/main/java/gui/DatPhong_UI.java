@@ -28,6 +28,7 @@ import model.HoaDonPhong;
 import model.KhachHang;
 import model.LoaiPhong;
 import model.Phong;
+import utils.Currency;
 import utils.Ngay;
 
 import java.awt.Component;
@@ -43,11 +44,14 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.sql.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
 
 public class DatPhong_UI extends JFrame{
@@ -88,23 +92,34 @@ public class DatPhong_UI extends JFrame{
 	private kDatePicker dpDenNgay;
 	private JTextField txtSoDienThoai;
 	private List<Phong> cthdp = new ArrayList<Phong>();
-	private JPanel contentPane;;
+	private JPanel contentPane;
+	private JTextField txtMaHD;
+	
+	private HoaDonPhong _hdp;
+	private JButton btnSua;
+	private JTextField txtTongTien;
+	private int tongTien;
+	private JButton btnThem;
     
     
     
-    public static void main(String[] args) throws IOException, NotBoundException {
+    public static void main(String[] args){
 		DatPhong_UI datPhongUI = new DatPhong_UI();
 //		datPhongUI.start();
 		datPhongUI.setVisible(true);
 		datPhongUI.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
     
-    public DatPhong_UI() throws IOException, NotBoundException{
-    	client = new Client();
+    public DatPhong_UI(){
+    	try {
+			client = new Client();
+		} catch (IOException | NotBoundException e) {
+			e.printStackTrace();
+		}
     	start();
     }
 
-    public void start() throws MalformedURLException, RemoteException, NotBoundException{
+    public void start(){
 
         renderGUI();
         renderData();
@@ -130,6 +145,20 @@ public class DatPhong_UI extends JFrame{
         JLabel lblThongTinDatPhong = new JLabel("Thông tin đặt phòng");
         lblThongTinDatPhong.setFont(new Font("Tahoma", Font.PLAIN, 20));
         panel_4.add(lblThongTinDatPhong);
+        
+        JPanel panel_3_1_3 = new JPanel();
+        FlowLayout flowLayout_10 = (FlowLayout) panel_3_1_3.getLayout();
+        flowLayout_10.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1_3);
+        
+        JLabel lblMaHD = new JLabel("Mã hóa đơn");
+        lblMaHD.setPreferredSize(new Dimension(150, 30));
+        panel_3_1_3.add(lblMaHD);
+        
+        txtMaHD = new JTextField();
+        txtMaHD.setEnabled(false);
+        txtMaHD.setColumns(20);
+        panel_3_1_3.add(txtMaHD);
         
         JPanel panel_3 = new JPanel();
         FlowLayout flowLayout = (FlowLayout) panel_3.getLayout();
@@ -242,10 +271,24 @@ public class DatPhong_UI extends JFrame{
         JPanel panel_7 = new JPanel();
         FlowLayout flowLayout_2 = (FlowLayout) panel_7.getLayout();
         flowLayout_2.setAlignment(FlowLayout.RIGHT);
-        panel_2.add(panel_7);
+//        panel_2.add(panel_7);
         
         chkKhachHangMoi = new JCheckBox("Khách hàng mới");
         panel_7.add(chkKhachHangMoi);
+        
+        JPanel panel_3_1_1_1_1 = new JPanel();
+        FlowLayout flowLayout_11 = (FlowLayout) panel_3_1_1_1_1.getLayout();
+        flowLayout_11.setAlignment(FlowLayout.LEFT);
+        panel_2.add(panel_3_1_1_1_1);
+        
+        JLabel lblTngTin = new JLabel("Tổng tiền");
+        lblTngTin.setPreferredSize(new Dimension(150, 30));
+        panel_3_1_1_1_1.add(lblTngTin);
+        
+        txtTongTien = new JTextField();
+        txtTongTien.setEnabled(false);
+        txtTongTien.setColumns(20);
+        panel_3_1_1_1_1.add(txtTongTien);
         
         JPanel panel_5 = new JPanel();
         panel_2.add(panel_5);
@@ -254,7 +297,11 @@ public class DatPhong_UI extends JFrame{
         btnDatPhong.setBackground(Color.WHITE);
         panel_5.add(btnDatPhong);
         
-        btnLamMoi = new JButton("Làm mới");
+        btnSua = new JButton("Sửa lịch đặt");
+        btnSua.setBackground(Color.WHITE);
+        panel_5.add(btnSua);
+        
+        btnLamMoi = new JButton("Tạo đơn đặt phòng khác");
         btnLamMoi.setBackground(Color.WHITE);
         panel_5.add(btnLamMoi);
         
@@ -288,13 +335,9 @@ public class DatPhong_UI extends JFrame{
         btnXemLichDat.setBackground(Color.WHITE);
         panel_6.add(btnXemLichDat);
         
-        JButton btnThem = new JButton("Thêm phòng này");
+        btnThem = new JButton("Thêm phòng này");
         btnThem.setBackground(Color.WHITE);
         panel_6.add(btnThem);
-        
-        JButton btnHuy = new JButton("Xóa phòng này");
-        btnHuy.setBackground(Color.WHITE);
-        panel_6.add(btnHuy);
         
         
         
@@ -309,30 +352,38 @@ public class DatPhong_UI extends JFrame{
         panel_8.add(scrollPane);
         
         JPanel panel_9 = new JPanel();
+        panel_9.setBorder(new TitledBorder(null, "Danh s\u00E1ch ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         panel_8.add(panel_9);
         panel_9.setLayout(new BorderLayout(0, 0));
         
-        JLabel lblNewLabel = new JLabel("Dang sách phòng đặt");
-        lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        panel_9.add(lblNewLabel, BorderLayout.NORTH);
-        
         modelChiTietDon = new DefaultTableModel(cols, 0);
+        
+        JPanel panel_10 = new JPanel();
+        FlowLayout flowLayout_9 = (FlowLayout) panel_10.getLayout();
+        flowLayout_9.setAlignment(FlowLayout.RIGHT);
+        panel_9.add(panel_10, BorderLayout.NORTH);
+        
+        JButton btnHuy = new JButton("Bỏ đặt phòng này");
+        btnHuy.setBackground(Color.WHITE);
+        panel_10.add(btnHuy);
         tblChiTietDon = new JTable(modelChiTietDon);
         JScrollPane scrollPane_1 = new JScrollPane(tblChiTietDon);
         panel_9.add(scrollPane_1);
         
         btnLamMoi.addActionListener((e) -> {
+        	txtMaHD.setText("");
+			modeThem();
         	clear();
+			cthdp.clear();
+			tinhTongTien();
+			
+			renderDSPhong();
+			renderChiTietHDP();
+			cboKhachHang.setSelectedIndex(0);
         });
         
         cboLoc.addActionListener((e) -> {
-        	try {
-				renderDSPhong();
-			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+        	renderDSPhong();
         });
         
         cboKhachHang.addActionListener((e) -> {
@@ -358,55 +409,55 @@ public class DatPhong_UI extends JFrame{
         	int idx = tblDSPhong.getSelectedRow();
         	if(idx == -1) {
         		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng");
+        		enableThemPhongNay();
         		return ;
         	}
-        	
         	Phong phong = dsp.get(idx);
         	
-        	Date d1 = Ngay.homNay();
-        	Date d2 = Ngay.homNay();
-        	
-        	try {
-				d1 = dpTuNgay.getFullDate();
-				d2 = dpDenNgay.getFullDate();
-			} catch (ParseException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-        	
-        	
-        	try {
-				if(client.getPhongDao().kiemTraPhongTrong(phong.getMaPhong(), d1, d2) == true) {
-					cthdp.add(phong);
-		        	try {
-						renderDSPhong();
-						return;
-					} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-						e1.printStackTrace();
-					}
+        	disableThemPhongNay(phong.getMaPhong());
+        	new Thread(() -> {
+	        	
+	        	
+	        	
+	        	
+	        	Date d1 = Ngay.homNay();
+	        	Date d2 = Ngay.homNay();
+	        	
+	        	try {
+					d1 = dpTuNgay.getFullDate();
+					d2 = dpDenNgay.getFullDate();
+				} catch (ParseException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
 				}
-			} catch (RemoteException | MalformedURLException | NotBoundException e2) {
-				e2.printStackTrace();
-			}
-        	
-        	JOptionPane.showMessageDialog(contentPane, "Phòng này không trống trong thời điểm bạn đặt");
-        	
+	        	
+	        	
+	        	try {
+					if(client.getPhongDao().kiemTraPhongTrong(phong.getMaPhong(), d1, d2) == true) {
+						cthdp.add(phong);
+			        	renderDSPhong();
+			        	tinhTongTien();
+			        	enableThemPhongNay();
+						return;
+					}
+				} catch (RemoteException | MalformedURLException | NotBoundException e2) {
+					e2.printStackTrace();
+				}
+	        	enableThemPhongNay();
+	        	JOptionPane.showMessageDialog(contentPane, "Phòng "+ phong.getMaPhong() +" không trống trong thời điểm bạn đặt");
+        	}).start();
         });
         
         btnHuy.addActionListener((e) -> {
         	int idx = tblChiTietDon.getSelectedRow();
         	if(idx == -1) {
-        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng trong danh sách phòng đặt để hủy");
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn phòng trong danh sách phòng đã chọn để hủy");
         		return ;
         	}
         	
         	cthdp.remove(idx);
-        	try {
-				renderDSPhong();
-			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-				e1.printStackTrace();
-			}
-        	
+        	renderDSPhong();
+        	tinhTongTien();
         });
         
         btnDatPhong.addActionListener((e) -> {
@@ -478,17 +529,12 @@ public class DatPhong_UI extends JFrame{
                 return;
             }
             
-            KhachHang kh;
-            if(chkKhachHangMoi.isSelected()) {
-            	kh = new KhachHang(
-            			txtTenKH.getText(), 
-            			txtCMND.getText(), 
-            			txtSoDienThoai.getText(), 
-            			ngayHetHan, 
-            			(String) cboLoaiKH.getSelectedItem());
-            }else {
-            	kh = dskh.get(cboKhachHang.getSelectedIndex()-1);
-            }
+        	int idx = cboKhachHang.getSelectedIndex();
+        	if(idx <= 0) {
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn khách hàng");
+        	}
+        	
+        	KhachHang kh = dskh.get(cboKhachHang.getSelectedIndex()-1);
             
             
             
@@ -498,13 +544,19 @@ public class DatPhong_UI extends JFrame{
             });
             HoaDonPhong hdp = new HoaDonPhong(tuNgay, denNgay, kh, dscthdp);
             try {
-				if(client.getHoaDonPhongDao().themHoaDonPhong(hdp)) {
+            	int maHD = client.getHoaDonPhongDao().themHoaDonPhong(hdp);
+				if(maHD != -1) {
+					txtMaHD.setText(String.valueOf(maHD));
 					JOptionPane.showMessageDialog(contentPane, "Đặt phòng thành công");
-					clear();
-					cthdp = new ArrayList<Phong>();
-					renderData();
+//					clear();
+//					cthdp = new ArrayList<Phong>();
+					modeSua();
+//					renderData();
 					return;
 				}	
+				
+				JOptionPane.showMessageDialog(contentPane, client.getHoaDonPhongDao().getError());
+				return;
 				
 			} catch (HeadlessException | RemoteException | MalformedURLException | NotBoundException e1) {
 
@@ -512,6 +564,83 @@ public class DatPhong_UI extends JFrame{
 			}
             
             JOptionPane.showMessageDialog(contentPane, "Đặt phòng thất bại");
+        });
+        
+        btnSua.addActionListener((e) -> {
+        	if(cthdp.size() == 0) {
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng thêm phòng");
+        		return;
+        	}
+        	
+            
+            Date homNay = Ngay.homNay(); 
+            Date ngayHetHan = Ngay.homNay();
+            try {
+                ngayHetHan = dpNgayHetHan.getFullDate();
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+            
+            if(!ngayHetHan.after(homNay)){
+                JOptionPane.showMessageDialog(contentPane, "Giấy tờ đã hết hạn, không thể đặt phòng");
+                return;
+            }
+            
+        	Date tuNgay = Ngay.homNay(), denNgay = Ngay.homNay();
+            
+            try {
+                tuNgay = dpTuNgay.getFullDate();
+                denNgay = dpDenNgay.getFullDate(); 
+            } catch (ParseException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            
+            if(!tuNgay.toString().equals(homNay.toString()) && tuNgay.before(homNay)){
+                JOptionPane.showMessageDialog(pnMain, "Ngày đến phải không được trước ngày hiện tại");
+                return;
+            }
+            
+            if(!tuNgay.toString().equals(denNgay.toString()) && denNgay.before(tuNgay)){
+                JOptionPane.showMessageDialog(pnMain, "Ngày đi không được trước ngày đến");
+                return;
+            }
+            
+            if(!denNgay.toString().equals(ngayHetHan.toString()) && ngayHetHan.before(denNgay)){
+                JOptionPane.showMessageDialog(pnMain, "Giấy tờ không đủ hạn, không thể đặt phòng");
+                return;
+            }
+            
+        	int idx = cboKhachHang.getSelectedIndex();
+        	if(idx <= 0) {
+        		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn khách hàng");
+        	}
+        	
+        	KhachHang kh = dskh.get(cboKhachHang.getSelectedIndex()-1);
+            
+            
+            
+            List<ChiTietHoaDonPhong> dscthdp = new ArrayList<ChiTietHoaDonPhong>();
+            cthdp.forEach(phong -> {
+            	dscthdp.add(new ChiTietHoaDonPhong(phong, phong.getLoaiPhong().getDonGia()));
+            });
+            HoaDonPhong hdp = new HoaDonPhong(Integer.parseInt(txtMaHD.getText()), tuNgay, denNgay, kh, dscthdp);
+            try {
+				if(client.getHoaDonPhongDao().capNhatHoaDonPhong(hdp)) {
+					
+					JOptionPane.showMessageDialog(contentPane, "Sửa thành công");
+					return;
+				}	
+				
+				JOptionPane.showMessageDialog(contentPane, client.getHoaDonPhongDao().getError());
+				return;
+				
+			} catch (HeadlessException | RemoteException | MalformedURLException | NotBoundException e1) {
+
+				e1.printStackTrace();
+			}
+            
+            JOptionPane.showMessageDialog(contentPane, "Sửa thất bại");
         });
         
         btnTimKiem.addActionListener((e) -> {
@@ -554,22 +683,38 @@ public class DatPhong_UI extends JFrame{
         });
         
         disableForm();
+        modeThem();
+        handleChangeDate();
     }
 
-    public void renderData() throws MalformedURLException, RemoteException, NotBoundException{
+    public void renderData(){
     	renderDSPhong();
     	renderKhachHang();
     	renderLoaiPhong();
+    	tinhTongTien();
     }
 
-    public void renderDSPhong() throws MalformedURLException, RemoteException, NotBoundException{
-        PhongDao phongDao = client.getPhongDao();
+    public void renderDSPhong(){
+        PhongDao phongDao = null;
+		try {
+			phongDao = client.getPhongDao();
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
         
         int idx = cboLoc.getSelectedIndex();
         if(idx <= 0)
-        	dsp = phongDao.getListPhong();
-        else {
-        	dsp = phongDao.getPhongByMaLoaiPhong(dslp.get(idx-1).getMaLoaiPhong());
+			try {
+				dsp = phongDao.getListPhong();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		else {
+        	try {
+				dsp = phongDao.getPhongByMaLoaiPhong(dslp.get(idx-1).getMaLoaiPhong());
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
         }
         
         tblDSPhong.clearSelection();
@@ -602,10 +747,15 @@ public class DatPhong_UI extends JFrame{
         renderChiTietHDP();
     }
 
-    public void renderLoaiPhong() throws RemoteException, MalformedURLException, NotBoundException{
+    public void renderLoaiPhong(){
         modelLoaiPhong.removeAllElements();
         modelLoaiPhong.addElement("Tất cả");
-        dslp = client.getLoaiPhongDao().getDSLoaiPhong();
+        try {
+			dslp = client.getLoaiPhongDao().getDSLoaiPhong();
+		} catch (RemoteException | MalformedURLException | NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         dslp.forEach(lp -> {
         	modelLoaiPhong.addElement(lp.getTenLoaiPhong());
         });
@@ -630,13 +780,71 @@ public class DatPhong_UI extends JFrame{
     	tblChiTietDon.repaint();
     }
 
-    public void renderKhachHang() throws RemoteException, MalformedURLException, NotBoundException{
+    public void renderKhachHang(){
         modelTenKH.removeAllElements();
         modelTenKH.addElement("");
-        dskh = client.getKhachHangDao().getListKhachHang();
+        try {
+			dskh = client.getKhachHangDao().getListKhachHang();
+		} catch (RemoteException | MalformedURLException | NotBoundException e) {
+			e.printStackTrace();
+		}
         dskh.forEach(kh -> {
         	modelTenKH.addElement("#"+kh.getMaKH()+" "+kh.getTenKH());
         });
+    }
+    
+    public void handleChangeDate() {
+    	
+    	dpTuNgay.btn.addActionListener(e -> {
+    		Timer tuNgayInterval = new Timer();
+    		tuNgayInterval.scheduleAtFixedRate(new TimerTask(){
+    			private int c = 100; // 10s
+    		    @Override
+    		    public void run(){
+    		    	tinhTongTien();
+    		    	if(c == 0) {
+    		    		tuNgayInterval.cancel();
+    		    	}
+    		    	c--;
+    		    }
+    		},0,100);
+    	});
+    	
+    	dpDenNgay.btn.addActionListener(e -> {
+    		Timer tuNgayInterval = new Timer();
+    		tuNgayInterval.scheduleAtFixedRate(new TimerTask(){
+    			private int c = 100; // 10s
+    		    @Override
+    		    public void run(){
+    		    	tinhTongTien();
+    		    	if(c == 0) {
+    		    		tuNgayInterval.cancel();
+    		    	}
+    		    	c--;
+    		    }
+    		},0,100);
+    	});
+    }
+    
+    public void tinhTongTien() {
+    	tongTien = 0;
+    	
+    	Date tuNgay = Ngay.homNay(), denNgay = Ngay.homNay();
+        
+        try {
+            tuNgay = dpTuNgay.getFullDate();
+            denNgay = dpDenNgay.getFullDate(); 
+        } catch (ParseException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    	
+    	int soNgay = (int) Ngay.tinhKhoangNgay(tuNgay, denNgay);
+    	cthdp.forEach(phong -> {
+    		tongTien += phong.getLoaiPhong().getDonGia() * soNgay;
+    	});
+    	
+    	txtTongTien.setText(Currency.format(tongTien));
     }
     
     public void showKhachHang(KhachHang kh) {
@@ -657,6 +865,7 @@ public class DatPhong_UI extends JFrame{
     	txtSoDienThoai.setText("");
     	cboLoaiKH.setSelectedIndex(0);
     	dpTuNgay.setValueToDay();
+    	dpDenNgay.setValueToDay();
     }
     
     public void disableForm() {
@@ -675,9 +884,70 @@ public class DatPhong_UI extends JFrame{
     	dpNgayHetHan.btn.setEnabled(true);
     	cboLoaiKH.setEnabled(true);
     }
+    
+    public void modeThem() {
+    	txtMaHD.setText("");
+    	btnDatPhong.setVisible(true);
+    	btnSua.setVisible(false);
+    	cboKhachHang.setEnabled(true);
+    }
+    
+    public void modeSua() {
+    	btnDatPhong.setVisible(false);
+    	btnSua.setVisible(true);
+    	cboKhachHang.setEnabled(false);
+    }
+    
+    
 
 
-    public void renderError(JTextField a, String message){
+    public HoaDonPhong get_hdp() {
+		return _hdp;
+	}
+
+	public void set_hdp(HoaDonPhong _hdp) {
+		this._hdp = _hdp;
+		txtMaHD.setText(String.valueOf(_hdp.getMaHD()));
+		for(int i=0; i<dskh.size(); i++) {
+			if(_hdp.getKhachHang().getMaKH() == dskh.get(i).getMaKH()) {
+				cboKhachHang.setSelectedIndex(i+1);
+				break;
+			}
+		}
+		cthdp = new ArrayList<Phong>();
+		
+		_hdp.getDsChiTietHoaDonPhong().forEach(cthd -> {
+			cthdp.add(cthd.getPhong());
+		});
+		dpTuNgay.setValue(_hdp.getNgayGioNhan());
+		dpDenNgay.setValue(_hdp.getNgayGioTra());
+		renderDSPhong();
+		renderChiTietHDP();
+		tinhTongTien();
+		modeSua();
+		
+	}
+	
+	public void setPhong(String maPhong) {
+		for(int i=0; i<dsp.size(); i++) {
+			if(dsp.get(i).getMaPhong().equals(maPhong)) {
+				tblDSPhong.setRowSelectionInterval(i, i);
+				break;
+			}
+		}
+	}
+	
+	public void disableThemPhongNay(String maPhong) {
+		btnThem.setText("Đang kiểm tra tình trạng phòng "+maPhong);
+		btnThem.setEnabled(false);
+	}
+	
+	public void enableThemPhongNay() {
+		btnThem.setText("Thêm phòng này");
+		btnThem.setEnabled(true);
+	}
+
+	public void renderError(JTextField a, String message){
         a.requestFocus();
         a.selectAll();
         JOptionPane.showMessageDialog(pnMain, message);

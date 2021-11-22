@@ -24,10 +24,12 @@ import javax.swing.table.DefaultTableModel;
 import app.Client;
 import dao.PhongDao;
 import model.ChiTietHoaDonPhong;
+import model.HoaDonDV;
 import model.HoaDonPhong;
 import model.KhachHang;
 import model.LoaiPhong;
 import model.Phong;
+import utils.Currency;
 import utils.Ngay;
 
 import java.awt.Component;
@@ -43,6 +45,8 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.sql.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -73,7 +77,7 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
 	private JTable tblDSHDPhong;
 	private DefaultTableModel modelChiTietDon;
 	private JTable tblChiTietDon;
-	private JButton btnDatPhong;
+	private JButton btnSuaHoaDon;
 	private JButton btnLamMoi;
 	private List<KhachHang> dskh;
 	private List<LoaiPhong> dslp;
@@ -85,14 +89,14 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
 	private JTextField txtMaHD;
 	private JComboBox cboTinhTrang;
 	private List<HoaDonPhong> dshdp;
-	private List<ChiTietHoaDonPhong> dscthdp;
+	private List<ChiTietHoaDonPhong> dscthdp = new ArrayList<ChiTietHoaDonPhong>();
 	private Date tuNgay;
 	private Date denNgay;
 	private String error;
 	private JComboBox cboTimKiem;
 	private JButton btnTimKiem;
 	private String where_sql = "";
-    
+	private double tongTien;
     
     
     public static void main(String[] args) throws IOException, NotBoundException {
@@ -208,9 +212,9 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         panel_2.add(panel_5);
         panel_5.setLayout(new GridLayout(0, 2, 10, 5));
         
-        btnDatPhong = new JButton("Sửa hóa đơn");
-        btnDatPhong.setBackground(Color.WHITE);
-        panel_5.add(btnDatPhong);
+        btnSuaHoaDon = new JButton("Sửa hóa đơn");
+        btnSuaHoaDon.setBackground(Color.WHITE);
+        panel_5.add(btnSuaHoaDon);
         
         JButton btnXoa = new JButton("Xóa");
         btnXoa.setBackground(Color.WHITE);
@@ -250,7 +254,7 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         btnTimKiem.setBackground(Color.WHITE);
         panel_6.add(btnTimKiem);
         
-        JButton btnDatLai = new JButton("Đặt lại");
+        JButton btnDatLai = new JButton("Làm mới dữ liệu");
         btnDatLai.setBackground(Color.WHITE);
         panel_6.add(btnDatLai);
         
@@ -261,7 +265,7 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         JPanel panel_8 = new JPanel();
         panel_1.add(panel_8, BorderLayout.CENTER);
         
-        String[] cols = {"Mã hóa đơn", "Tên khách hàng", "CMND", "Số điện thoại", "Loại khách hàng", "Ngày đến", "Ngày đi", "Tình trạng"};
+        String[] cols = {"Mã hóa đơn", "Tên khách hàng", "CMND", "Số điện thoại", "Loại khách hàng", "Ngày đến", "Ngày đi", "Tình trạng", "Tổng tiền"};
         modelDSHDPhong = new DefaultTableModel(cols, 0);
         panel_8.setLayout(new GridLayout(2, 1, 0, 0));
         tblDSHDPhong = new JTable(modelDSHDPhong);
@@ -283,6 +287,10 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         btnXemLichDat.setBackground(Color.WHITE);
         panel_7.add(btnXemLichDat);
         
+        JButton btnLamMoiDSP = new JButton("Làm mới dữ liệu");
+        btnLamMoiDSP.setBackground(Color.WHITE);
+        panel_7.add(btnLamMoiDSP);
+        
         String[] cols2 = {"Mã phòng", "Vị trí", "Số giường", "Số người", "Loại phòng", "Đơn giá"};
         modelChiTietDon = new DefaultTableModel(cols2, 0);
 
@@ -296,7 +304,7 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         
 
         
-        btnDatPhong.addActionListener((e) -> {
+        btnSuaHoaDon.addActionListener((e) -> {
         	int idx = tblDSHDPhong.getSelectedRow();
         	if(idx == -1) {
         		JOptionPane.showMessageDialog(contentPane, "Vui lòng chọn hóa đơn để sửa");
@@ -315,10 +323,15 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         		return;
         	}
         	
-        	if(tinhTrang == 1 && hdp.getTinhTrang() == 0 && (hdp.getNgayGioNhan().after(Ngay.homNay()) || hdp.getNgayGioTra().before(Ngay.homNay()))) {
-        		JOptionPane.showMessageDialog(contentPane, "Ngày nhận phòng không hợp lệ với hóa đơn đặt");
-        		return;
-        	}
+//        	System.out.println(Ngay.homNay());
+//        	System.out.println(hdp.getNgayGioNhan().after(Ngay.homNay()));
+//        	System.out.println(hdp.getNgayGioTra().before(Ngay.homNay()));
+//        	System.out.println();
+//        	
+//        	if(tinhTrang == 1 && hdp.getTinhTrang() == 0 && (hdp.getNgayGioNhan().after(Ngay.homNay()) || hdp.getNgayGioTra().before(Ngay.homNay()))) {
+//        		JOptionPane.showMessageDialog(contentPane, "Ngày nhận phòng không hợp lệ với hóa đơn đặt");
+//        		return;
+//        	}
         	
     		tuNgay = Ngay.homNay();
     		denNgay = Ngay.homNay();
@@ -334,6 +347,7 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         	hdp.setNgayGioNhan(tuNgay);
         	hdp.setNgayGioTra(denNgay);
         	hdp.setTinhTrang(cboTinhTrang.getSelectedIndex());
+        	hdp.setDsChiTietHoaDonPhong(dscthdp);
         	try {
 				if(client.getHoaDonPhongDao().capNhatHoaDonPhong(hdp)) {
 					JOptionPane.showMessageDialog(contentPane, "Sửa thành công");
@@ -368,6 +382,8 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
 				if(client.getHoaDonPhongDao().xoaHoaDonPhong(dshdp.get(idx).getMaHD())) {
 					JOptionPane.showMessageDialog(contentPane, "Xóa thành công");
 					renderData();
+					clear();
+					clearDSP();
 	        		return ;
 				}
 			} catch (RemoteException | MalformedURLException | NotBoundException e1) {
@@ -416,11 +432,26 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         	
         	where_sql = "";
         	txtTimKiem.setText("");
+        	clearDSP();
         	try {
 				renderDSHDPhong();
 			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
 				e1.printStackTrace();
 			}
+        });
+        
+        btnLamMoiDSP.addActionListener((e) -> {
+        	int idx = tblDSHDPhong.getSelectedRow();
+        	if(idx != -1) {
+        		HoaDonPhong hdp = dshdp.get(idx);
+        		try {
+        			renderDSPhong(hdp);
+				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        	}
+        	
         });
         
         tblDSHDPhong.getSelectionModel().addListSelectionListener((e) -> {
@@ -432,7 +463,6 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         		dpDenNgay.setValue(hdp.getNgayGioTra());
         		cboTinhTrang.setSelectedIndex(hdp.getTinhTrang());
         		
-        		
         		try {
     				renderDSPhong(hdp);
     			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
@@ -440,6 +470,23 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
     			}
         	}
         	
+        });
+        
+        btnSuaDanhSachPhong.addActionListener((e) -> {
+        	int idx = tblDSHDPhong.getSelectedRow();
+        	if(idx == -1) {
+        		JOptionPane.showMessageDialog(contentPane, "Chọn hóa đơn để sửa");
+        		return;
+        	}
+        	
+        	HoaDonPhong hdp = dshdp.get(idx);
+        	hdp.setDsChiTietHoaDonPhong(dscthdp);
+        	DatPhong_UI pgDatPhong;
+			pgDatPhong = new DatPhong_UI();
+        	
+        	pgDatPhong.set_hdp(hdp);
+        	pgDatPhong.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        	pgDatPhong.setVisible(true);
         });
         
     }
@@ -471,7 +518,8 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
     			hdp.getKhachHang().getLoaiKH(),
     			hdp.getNgayGioNhan(),
     			hdp.getNgayGioTra(),
-    			convertTinhTrang(hdp.getTinhTrang())
+    			convertTinhTrang(hdp.getTinhTrang()),
+    			Currency.format(tinhTongTien(hdp))
     		});
     	});
     	tblDSHDPhong.revalidate();
@@ -501,7 +549,25 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         
     }
 
-
+    public double tinhTongTien(HoaDonPhong hdp) {
+    	tongTien = 0.0;
+    	
+    	int soNgay = (int) Ngay.tinhKhoangNgay(hdp.getNgayGioNhan(), hdp.getNgayGioTra());
+    	List<ChiTietHoaDonPhong> dscthdp = new ArrayList<ChiTietHoaDonPhong>();
+    	
+		try {
+			dscthdp = client.getChiTietHoaDonPhongDao().getListChiTietHDPByMaHD(hdp.getMaHD());
+		} catch (RemoteException | MalformedURLException | NotBoundException e) {
+			e.printStackTrace();
+		}
+		
+    	dscthdp.forEach(cthdp -> {
+    		tongTien += cthdp.getPhong().getLoaiPhong().getDonGia() * soNgay;
+    	});
+    	
+    	return tongTien;
+    }
+    
     
     
     public void clear() {
@@ -511,7 +577,20 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
     	dpDenNgay.setValueToDay();
     }
     
+    public void clearDSP() {
+    	dscthdp.clear();
+    	modelChiTietDon.getDataVector().removeAllElements();
+    	tblChiTietDon.revalidate();
+    	tblChiTietDon.repaint();
+    }
+    
     public boolean checkDate() {
+    	int idx = tblDSHDPhong.getSelectedRow();
+    	if(idx != -1) {
+    		return true;
+    	}
+    	
+    	HoaDonPhong hdp = dshdp.get(idx);
     	
     	Date homNay = Ngay.homNay(); 
     	Date tuNgay = Ngay.homNay(), denNgay = Ngay.homNay();
@@ -522,6 +601,12 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		}
+		
+		
+		if(tuNgay.equals(hdp.getNgayGioNhan()) && denNgay.equals(hdp.getNgayGioTra())) {
+//			không thay đổi thời gian
+			return true;
 		}
 
 		if (!tuNgay.toString().equals(homNay.toString()) && tuNgay.before(homNay)) {
