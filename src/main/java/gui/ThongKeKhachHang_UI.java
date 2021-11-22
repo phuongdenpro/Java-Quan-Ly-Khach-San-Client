@@ -4,10 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.Box;
@@ -26,11 +31,16 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import app.Client;
+import dao.KhachHangDao;
+import dao.PhongDao;
+import model.KhachHang;
+import model.Phong;
+import utils.Currency;
 
 
 
 
-public class ThongKeKhachHang_UI extends JFrame{
+public class ThongKeKhachHang_UI extends JFrame implements ActionListener, MouseListener{
 	
 	
 private int soLuongSP = 0;
@@ -60,6 +70,8 @@ private int soLuongSP = 0;
 	private JComboBox cboLimit;
 
 	private Client client;
+
+	private List<KhachHang> dskh;
 
 	
 	 public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException {
@@ -159,7 +171,7 @@ private int soLuongSP = 0;
 			
 			panel_1.setLayout(new BorderLayout(0, 0));
 			
-			String[] cols = {"STT", "Mã khách hàng", "Tên khách hàng","CMND","Ngày hết hạn", "Số điện thoại","Loại khách hàng", "Số lần đặt phòng", "Số tiền đã trả"};
+			String[] cols = {"Mã khách hàng", "Tên khách hàng","CMND","Ngày hết hạn", "Số điện thoại","Loại khách hàng", "Số lần đặt phòng", "Số tiền đã trả"};
 			model = new DefaultTableModel(cols, 0);
 			table = new JTable(model);
 			JScrollPane scrollPane = new JScrollPane(table);
@@ -193,9 +205,76 @@ private int soLuongSP = 0;
 			panel_5_1.add(Box.createHorizontalStrut(300));
 			JButton btnIn = new JButton("In báo cáo", new ImageIcon("data/images/printer.png"));
 			panel_5_1.add(btnIn);
+			renderData();
 			
 }
 	    public JPanel getContentPane() {
 			return contentPane;
-	    }   
+	    }
+
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			
+		}   
+		 public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
+				KhachHangDao khachHangDao = client.getKhachHangDao();
+		    	
+		    	
+		        	dskh = khachHangDao.getListKhachHang();
+		        
+		        
+		        table.clearSelection();
+		        model.getDataVector().removeAllElements();
+		        for(int j=0; j<dskh.size(); j++) {
+		        	KhachHang khachhang = dskh.get(j);
+		        	model.addRow(new Object[] {
+		        		khachhang.getMaKH(),
+		        		khachhang.getTenKH(),
+		        		khachhang.getCmnd(),
+		        		khachhang.getNgayHetHan(),
+		        		khachhang.getSoDienThoai(),
+		        		khachhang.getLoaiKH(),
+		        		khachhang.getSoLanDatPhong()
+		        	});
+		        };
+		        table.revalidate();
+		        table.repaint();
+		    }
 }
