@@ -35,6 +35,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/QuanLyKhachSan_Server"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/QuanLyKhachSanServer"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

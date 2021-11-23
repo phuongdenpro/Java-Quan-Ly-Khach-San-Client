@@ -220,58 +220,58 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		panel_5_1.add(btnIn);
 
 		renderData();
-//		btnThongKe.addActionListener((e) -> {
-//			long ml = System.currentTimeMillis();
-////	        ml = ml/86400000*86400000;
-//			Date now = new Date(ml);
-//
-//			Date tuNgay = new Date(ml), toiNgay = new Date(ml); // hom nay
-//
-//			if (cboLoaiTK.getSelectedIndex() == 0) { // tuy chinh
-//				try {
-//					tuNgay = dpTuNgay.getFullDate();
-//					toiNgay = dpToiNgay.getFullDate();
-//				} catch (ParseException e1) {
-//					e1.printStackTrace();
-//				}
-//
-//				if (tuNgay.after(now)) {
-//					JOptionPane.showMessageDialog(contentPane, "Từ ngày không hợp lệ");
-//					return;
-//				}
-//
-//				if (toiNgay.after(now)) {
-//					JOptionPane.showMessageDialog(contentPane, "Tới ngày không hợp lệ");
-//					return;
-//				}
-//
-//				if (tuNgay.after(toiNgay)) {
-//					JOptionPane.showMessageDialog(contentPane, "Ngày không hợp lệ");
-//					return;
-//				}
-//			} else if (cboLoaiTK.getSelectedIndex() == 2) { // hom qua
-//				tuNgay = utils.Ngay.homQua();
-//				toiNgay = utils.Ngay.homQua();
-//			} else if (cboLoaiTK.getSelectedIndex() == 3) { // 7 ngay qua
-//				tuNgay = utils.Ngay._7NgayQua();
-//			} else if (cboLoaiTK.getSelectedIndex() == 4) { // 1 thang qua
-//				tuNgay = utils.Ngay._1ThangQua();
-//			} else if (cboLoaiTK.getSelectedIndex() == 5) { // 1 nam qua
-//				tuNgay = utils.Ngay._1NamQua();
+		btnThongKe.addActionListener((e) -> {
+			long ml = System.currentTimeMillis();
+//	        ml = ml/86400000*86400000;
+			Date now = new Date(ml);
+
+			Date tuNgay = new Date(ml), toiNgay = new Date(ml); // hom nay
+
+			if (cboLoaiTK.getSelectedIndex() == 0) { // tuy chinh
+				try {
+					tuNgay = dpTuNgay.getFullDate();
+					toiNgay = dpToiNgay.getFullDate();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
+
+				if (tuNgay.after(now)) {
+					JOptionPane.showMessageDialog(contentPane, "Từ ngày không hợp lệ");
+					return;
+				}
+
+				if (toiNgay.after(now)) {
+					JOptionPane.showMessageDialog(contentPane, "Tới ngày không hợp lệ");
+					return;
+				}
+
+				if (tuNgay.after(toiNgay)) {
+					JOptionPane.showMessageDialog(contentPane, "Ngày không hợp lệ");
+					return;
+				}
+			} else if (cboLoaiTK.getSelectedIndex() == 2) { // hom qua
+				tuNgay = utils.Ngay.homQua();
+				toiNgay = utils.Ngay.homQua();
+			} else if (cboLoaiTK.getSelectedIndex() == 3) { // 7 ngay qua
+				tuNgay = utils.Ngay._7NgayQua();
+			} else if (cboLoaiTK.getSelectedIndex() == 4) { // 1 thang qua
+				tuNgay = utils.Ngay._1ThangQua();
+			} else if (cboLoaiTK.getSelectedIndex() == 5) { // 1 nam qua
+				tuNgay = utils.Ngay._1NamQua();
+			}
+
+//			if (!String.valueOf(cboLimit.getSelectedItem()).matches("^\\d+$")) {
+//				JOptionPane.showMessageDialog(contentPane, "Số lượng khách hàng tối đa không hợp lệ");
+//				return;
 //			}
-//
-////			if (!String.valueOf(cboLimit.getSelectedItem()).matches("^\\d+$")) {
-////				JOptionPane.showMessageDialog(contentPane, "Số lượng khách hàng tối đa không hợp lệ");
-////				return;
-////			}
-////			
-//			try {
-//				renderData(tuNgay, toiNgay);
-//			} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//		});
+//			
+			try {
+				renderData(tuNgay, toiNgay);
+			} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 		btnLamMoi.addActionListener((e) -> {
 			try {
 				renderData();
@@ -370,40 +370,40 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		table.revalidate();
 		table.repaint();
 	}
-//	public void renderData(Date tuNgay, Date toiNgay)
-//			throws SQLException, MalformedURLException, RemoteException, NotBoundException {
-//		KhachHangDao khachHangDao = client.getKhachHangDao();
-//		ChiTietDVDao ctDVdao = client.getChiTietDVDao();
-//		 ChiTietHoaDonPhongDao cthoaDonPhongDao = client.getChiTietHoaDonPhongDao();
-//		dskh = khachHangDao.getListKhachHang();
-//		int tongKH = 0;
-//		double tongdoanhthu = 0;
-//		table.clearSelection();
-//		model.getDataVector().removeAllElements();
-//		for (int j = 0; j < dskh.size(); j++) {
-//			KhachHang khachhang = dskh.get(j);
-//			dsdv = ctDVdao.getListChiTietDVByMaKHAndDate(khachhang.getMaKH(),tuNgay,toiNgay);
-//			dshdp = cthoaDonPhongDao.getListChiTietHDPByMaKHAndDate(khachhang.getMaKH(), tuNgay, toiNgay);
-//			double tongTien = 0;
-//			for (ChiTietDV dv : dsdv) {
-//				tongTien += dv.getDonGia() * dv.getSoLuong();
-//			}
-//			for (ChiTietHoaDonPhong ds : dshdp) {
-//				tongTien += ds.getDonGia();
-//			}
-//
-//			model.addRow(new Object[] { khachhang.getMaKH(), khachhang.getTenKH(), khachhang.getCmnd(),
-//					khachhang.getNgayHetHan(), khachhang.getSoDienThoai(), khachhang.getLoaiKH(),
-//					khachhang.getSoLanDatPhong(),dsdv.size(), Currency.format(tongTien) });
-//			tongKH++;
-//			tongdoanhthu+=tongTien;
-//		}
-//		;
-//		lblTongSo.setText(String.valueOf(tongKH));
-//		lblTongSoTien.setText(Currency.format(tongdoanhthu));
-//		table.revalidate();
-//		table.repaint();
-//	}
+	public void renderData(Date tuNgay, Date toiNgay)
+			throws SQLException, MalformedURLException, RemoteException, NotBoundException {
+		KhachHangDao khachHangDao = client.getKhachHangDao();
+		ChiTietDVDao ctDVdao = client.getChiTietDVDao();
+		 ChiTietHoaDonPhongDao cthoaDonPhongDao = client.getChiTietHoaDonPhongDao();
+		dskh = khachHangDao.getListKhachHang();
+		int tongKH = 0;
+		double tongdoanhthu = 0;
+		table.clearSelection();
+		model.getDataVector().removeAllElements();
+		for (int j = 0; j < dskh.size(); j++) {
+			KhachHang khachhang = dskh.get(j);
+			dsdv = ctDVdao.getListChiTietDVByMaKHAndDate(khachhang.getMaKH(),tuNgay,toiNgay);
+			dshdp = cthoaDonPhongDao.getListChiTietHDPByMaKHAndDate(khachhang.getMaKH(), tuNgay, toiNgay);
+			double tongTien = 0;
+			for (ChiTietDV dv : dsdv) {
+				tongTien += dv.getDonGia() * dv.getSoLuong();
+			}
+			for (ChiTietHoaDonPhong ds : dshdp) {
+				tongTien += ds.getDonGia();
+			}
+
+			model.addRow(new Object[] { khachhang.getMaKH(), khachhang.getTenKH(), khachhang.getCmnd(),
+					khachhang.getNgayHetHan(), khachhang.getSoDienThoai(), khachhang.getLoaiKH(),
+					khachhang.getSoLanDatPhong(),dsdv.size(), Currency.format(tongTien) });
+			tongKH++;
+			tongdoanhthu+=tongTien;
+		}
+		;
+		lblTongSo.setText(String.valueOf(tongKH));
+		lblTongSoTien.setText(Currency.format(tongdoanhthu));
+		table.revalidate();
+		table.repaint();
+	}
 
 	private String formatDate(Date date) {
 		if (date == null)
