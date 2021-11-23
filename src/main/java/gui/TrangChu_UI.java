@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
@@ -93,7 +95,7 @@ public class TrangChu_UI extends JFrame{
 
     public void start(){
     	renderGUI();
-        renderLoaiPhong();
+    	renderData();
     }
 
     public void renderGUI() {
@@ -179,7 +181,7 @@ public class TrangChu_UI extends JFrame{
         gl_pnPhongTrong.setHgap(20);
         pnPhongTrong.setLayout(gl_pnPhongTrong);
         
-        renderDSPhong();
+        
         
         Component horizontalStrut_1 = Box.createHorizontalStrut(50);
         panel.add(horizontalStrut_1);
@@ -188,6 +190,11 @@ public class TrangChu_UI extends JFrame{
 			renderDSPhong();
         });
         
+    }
+    
+    public void renderData() {
+    	renderLoaiPhong();
+        renderDSPhong();
     }
     
     public void renderDSPhong() {
@@ -377,6 +384,13 @@ public class TrangChu_UI extends JFrame{
         	pgDatPhong.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         	pgDatPhong.setVisible(true);
         	pgDatPhong.setPhong(phong.getMaPhong());
+        	pgDatPhong.addWindowListener(new WindowAdapter() {
+        		@Override
+        	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        	        renderData();
+        			pgDatPhong.dispose();
+        	    }
+        	});
         });
         
         btn_XemLichDat.addActionListener(e -> {
@@ -393,7 +407,7 @@ public class TrangChu_UI extends JFrame{
         	HoaDonDV hddv = null;
         	
         	try {
-				hdp = client.getHoaDonPhongDao().getHDPbyMaPhong(phong.getMaPhong());
+				hdp = client.getHoaDonPhongDao().getHDPThanhToanByMaPhong(phong.getMaPhong());
 			} catch (RemoteException | MalformedURLException | NotBoundException e1) {
 				e1.printStackTrace();
 			}
@@ -409,6 +423,13 @@ public class TrangChu_UI extends JFrame{
             pageThanhToan.renderData();
             pageThanhToan.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             pageThanhToan.setVisible(true);
+            pageThanhToan.addWindowListener(new WindowAdapter() {
+        		@Override
+        	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        	        renderData();
+        	        pageThanhToan.dispose();
+        	    }
+        	});
         });
         
     }

@@ -362,7 +362,6 @@ public class SuDungDV_UI extends JFrame {
 		panel_3.add(scrollPane_1, BorderLayout.CENTER);
 		
 		try {
-			renderKhachHang();
 			renderData();
 		} catch (SQLException e3) {
 			// TODO Auto-generated catch block
@@ -572,6 +571,11 @@ public class SuDungDV_UI extends JFrame {
 //		});
 	}
 	
+	public void renderData() throws SQLException {
+		renderKhachHang();
+		renderDSDV();
+	}
+	
 	public void renderKhachHang() throws SQLException {
 		try {
 			dskh = client.getKhachHangDao().getListKhachHang();
@@ -588,7 +592,7 @@ public class SuDungDV_UI extends JFrame {
 	}
 	
 	
-	public void renderData() throws SQLException {
+	public void renderDSDV() throws SQLException {
 		try {
 			dsdv = client.getDichVuDao().getListDichVu();
 		} catch (RemoteException | MalformedURLException | NotBoundException e) {

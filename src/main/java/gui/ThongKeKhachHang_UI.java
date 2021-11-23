@@ -93,7 +93,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		new ThongKeKhachHang_UI().setVisible(true);
 	}
 
-	public ThongKeKhachHang_UI() throws RemoteException, MalformedURLException, NotBoundException, SQLException {
+	public ThongKeKhachHang_UI(){
 		try {
 			client = new Client();
 		} catch (IOException | NotBoundException e) {
@@ -219,7 +219,12 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		JButton btnIn = new JButton("In báo cáo", new ImageIcon("data/images/printer.png"));
 		panel_5_1.add(btnIn);
 
-		renderData();
+		try {
+			renderData();
+		} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		btnThongKe.addActionListener((e) -> {
 			long ml = System.currentTimeMillis();
 //	        ml = ml/86400000*86400000;
@@ -411,4 +416,5 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		return sdf.format(date);
 	}
+	
 }

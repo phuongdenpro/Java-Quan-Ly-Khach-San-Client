@@ -85,7 +85,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		new ThongKeDichVu_UI().setVisible(true);
 	}
 
-	public ThongKeDichVu_UI() throws RemoteException, MalformedURLException, NotBoundException {
+	public ThongKeDichVu_UI(){
 		try {
 			client = new Client();
 		} catch (IOException | NotBoundException e) {
@@ -208,7 +208,12 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		JButton btnIn = new JButton("In báo cáo", new ImageIcon("data/images/printer.png"));
 		panel_5_1.add(btnIn);
 
-		renderData();
+		try {
+			renderData();
+		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 
 		btnThongKe.addActionListener((e) -> {
 			long ml = System.currentTimeMillis();

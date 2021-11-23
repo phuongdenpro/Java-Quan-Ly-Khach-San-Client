@@ -37,6 +37,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.event.WindowAdapter;
 //import java.awt.event.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -44,9 +45,12 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 import java.sql.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -97,6 +101,8 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
 	private JButton btnTimKiem;
 	private String where_sql = "";
 	private double tongTien;
+	private Thread threadRenderDSHDPhong;
+	private List<Integer> lst = new ArrayList<Integer>();
     
     
     public static void main(String[] args) throws IOException, NotBoundException {
@@ -287,9 +293,9 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         btnXemLichDat.setBackground(Color.WHITE);
         panel_7.add(btnXemLichDat);
         
-        JButton btnLamMoiDSP = new JButton("Làm mới dữ liệu");
-        btnLamMoiDSP.setBackground(Color.WHITE);
-        panel_7.add(btnLamMoiDSP);
+//        JButton btnLamMoiDSP = new JButton("Làm mới dữ liệu");
+//        btnLamMoiDSP.setBackground(Color.WHITE);
+//        panel_7.add(btnLamMoiDSP);
         
         String[] cols2 = {"Mã phòng", "Vị trí", "Số giường", "Số người", "Loại phòng", "Đơn giá"};
         modelChiTietDon = new DefaultTableModel(cols2, 0);
@@ -440,19 +446,19 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
 			}
         });
         
-        btnLamMoiDSP.addActionListener((e) -> {
-        	int idx = tblDSHDPhong.getSelectedRow();
-        	if(idx != -1) {
-        		HoaDonPhong hdp = dshdp.get(idx);
-        		try {
-        			renderDSPhong(hdp);
-				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-        	}
-        	
-        });
+//        btnLamMoiDSP.addActionListener((e) -> {
+//        	int idx = tblDSHDPhong.getSelectedRow();
+//        	if(idx != -1) {
+//        		HoaDonPhong hdp = dshdp.get(idx);
+//        		try {
+//        			renderDSPhong(hdp);
+//				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//        	}
+//        	
+//        });
         
         tblDSHDPhong.getSelectionModel().addListSelectionListener((e) -> {
         	int idx = tblDSHDPhong.getSelectedRow();
@@ -478,6 +484,7 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         		JOptionPane.showMessageDialog(contentPane, "Chọn hóa đơn để sửa");
         		return;
         	}
+
         	
         	HoaDonPhong hdp = dshdp.get(idx);
         	hdp.setDsChiTietHoaDonPhong(dscthdp);
@@ -487,15 +494,72 @@ public class QuanLyHoaDonPhong_UI extends JFrame{
         	pgDatPhong.set_hdp(hdp);
         	pgDatPhong.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         	pgDatPhong.setVisible(true);
+        	pgDatPhong.addWindowListener(new WindowAdapter() {
+        		@Override
+        	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        	        try {
+        	        	
+						renderData();
+						tblDSHDPhong.setRowSelectionInterval(idx, idx);
+						renderDSPhong(dshdp.get(idx));
+					} catch (MalformedURLException | RemoteException | NotBoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        	        pgDatPhong.dispose();
+        	    }
+        	});
         });
         
+//        new Thread(() -> {
+//			try {
+//				renderData2();
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		}).start();
+//		
+//		new Thread(() -> {
+//			try {
+//				renderData3();
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		}).start();
     }
 
     public void renderData() throws MalformedURLException, RemoteException, NotBoundException{
     	renderDSHDPhong();
     }
     
+//    public void renderData2() throws InterruptedException{
+//    	synchronized(lst) {
+//	    	while(true) {
+//	    		
+//	    		try {
+//	    			System.out.println("wait");
+//					lst.wait();
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//	    		System.out.println(lst);
+//	    	}
+//    	}
+//    }
+//    
+//    public void renderData3() throws InterruptedException{
+//    	synchronized(lst) {
+//			System.out.println("addddd");
+//			lst.add(1);
+//		    lst.notify();
+//    	}
+//    }
+    
+    
     public void renderDSHDPhong() throws MalformedURLException, RemoteException, NotBoundException{
+    	
     	if(where_sql.equals("")) {
     		dshdp = client.getHoaDonPhongDao().getListHoaDonPhong();
     	}else {
