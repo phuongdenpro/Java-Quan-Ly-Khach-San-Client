@@ -93,7 +93,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		setBounds(0, 0, 1300, 700);
+		setBounds(0, 0, 1000, 670);
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -143,7 +143,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		// dpToiNgay = new kDatePicker();
 		panel_2.add(dpToiNgay);
 
-		panel_2.add(Box.createHorizontalStrut(50));
+		panel_2.add(Box.createHorizontalStrut(10));
 		JButton btnThongKe = new JButton("Thống kê", new ImageIcon("data/images/statistics.png"));
 		btnThongKe.setPreferredSize(new Dimension(160, 25));
 
@@ -173,7 +173,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		JPanel panel_5 = new JPanel();
 		panel_4.add(panel_5);
 
-		panel_5.add(Box.createHorizontalStrut(100));
+		panel_5.add(Box.createHorizontalStrut(20));
 
 		JLabel lblTongDV = new JLabel("Tổng số dịch vụ: ");
 		lblTongDV.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -204,7 +204,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		lblTongSoTien.setPreferredSize(new Dimension(100, 30));
 		lblTongSoTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_5_1.add(lblTongSoTien);
-		panel_5_1.add(Box.createHorizontalStrut(200));
+		panel_5_1.add(Box.createHorizontalStrut(50));
 		JButton btnIn = new JButton("In báo cáo", new ImageIcon("data/images/printer.png"));
 		panel_5_1.add(btnIn);
 
@@ -270,6 +270,9 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 				e1.printStackTrace();
 			}
 
+		});
+		btnIn.addActionListener((e) -> {
+			JOptionPane.showMessageDialog(contentPane, "In báo cáo thành công");
 		});
 		cboLoaiTK.addActionListener((e) -> {
 			if (cboLoaiTK.getSelectedIndex() == 0) {

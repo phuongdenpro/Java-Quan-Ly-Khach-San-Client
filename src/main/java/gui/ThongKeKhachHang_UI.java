@@ -50,6 +50,7 @@ import model.HoaDonPhong;
 import model.KhachHang;
 import model.Phong;
 import utils.Currency;
+import utils.Ngay;
 
 public class ThongKeKhachHang_UI extends JFrame implements ActionListener, MouseListener {
 
@@ -79,6 +80,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 
 	private JComboBox cboLimit;
 
+
 	private Client client;
 
 	private List<KhachHang> dskh;
@@ -89,11 +91,11 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 
 	private List<ChiTietHoaDonPhong> dshdp;
 
-	public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException, SQLException {
+	public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException{
 		new ThongKeKhachHang_UI().setVisible(true);
 	}
 
-	public ThongKeKhachHang_UI() throws RemoteException, MalformedURLException, NotBoundException, SQLException {
+	public ThongKeKhachHang_UI() throws RemoteException, MalformedURLException, NotBoundException{
 		try {
 			client = new Client();
 		} catch (IOException | NotBoundException e) {
@@ -101,7 +103,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		setBounds(0, 0, 1300, 700);
+		setBounds(0, 0, 1000, 670);
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -121,7 +123,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 
 		JPanel panel_2 = new JPanel();
 		panel.add(panel_2);
-		panel_2.add(Box.createHorizontalStrut(50));
+		panel_2.add(Box.createHorizontalStrut(20));
 		JLabel lblThongKeTheo = new JLabel("Thống kê theo: ");
 		panel_2.add(lblThongKeTheo);
 
@@ -134,6 +136,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		modelLoai.addElement("7 ngày qua");
 		modelLoai.addElement("1 tháng qua");
 		modelLoai.addElement("1 năm qua");
+		
 
 		JLabel lblTuNgay = new JLabel("Từ ngày:  ");
 		panel_2.add(lblTuNgay);
@@ -166,7 +169,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 //		modelLimit.addElement(50);
 //		modelLimit.addElement(100);
 //		modelLimit.addElement(500);
-		panel_2.add(Box.createHorizontalStrut(50));
+		panel_2.add(Box.createHorizontalStrut(20));
 		JButton btnThongKe = new JButton("Thống kê", new ImageIcon("data/images/statistics.png"));
 		btnThongKe.setPreferredSize(new Dimension(150, 25));
 
@@ -196,7 +199,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		JPanel panel_5 = new JPanel();
 		panel_4.add(panel_5);
 
-		panel_5.add(Box.createHorizontalStrut(350));
+		panel_5.add(Box.createHorizontalStrut(230));
 		JLabel lblTong = new JLabel("Tổng số khách hàng: ");
 		lblTong.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_5.add(lblTong);
@@ -215,7 +218,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		lblTongSoTien = new JLabel("0");
 		lblTongSoTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_5_1.add(lblTongSoTien);
-		panel_5_1.add(Box.createHorizontalStrut(300));
+		panel_5_1.add(Box.createHorizontalStrut(150));
 		JButton btnIn = new JButton("In báo cáo", new ImageIcon("data/images/printer.png"));
 		panel_5_1.add(btnIn);
 
@@ -267,7 +270,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 //			
 			try {
 				renderData(tuNgay, toiNgay);
-			} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -276,9 +279,6 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 			try {
 				renderData();
 			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -292,6 +292,9 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 				dpTuNgay.btn.setEnabled(false);
 				dpToiNgay.btn.setEnabled(false);
 			}
+		});
+		btnIn.addActionListener((e) -> {
+			JOptionPane.showMessageDialog(contentPane, "In báo cáo thành công");
 		});
 
 	}
@@ -336,7 +339,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 
 	}
 
-	public void renderData() throws SQLException,MalformedURLException, RemoteException, NotBoundException {
+	public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
 		KhachHangDao khachHangDao = client.getKhachHangDao();
 		ChiTietDVDao ctDVdao = client.getChiTietDVDao();
 		 ChiTietHoaDonPhongDao cthoaDonPhongDao = client.getChiTietHoaDonPhongDao();
@@ -355,12 +358,13 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 				tongTien += dv.getDonGia() * dv.getSoLuong();
 			}
 			for (ChiTietHoaDonPhong ds : dshdp) {
-				tongTien += ds.getDonGia();
+				int soNgay = (int) Ngay.tinhKhoangNgay(ds.getHoaDonPhong().getNgayGioNhan(), ds.getHoaDonPhong().getNgayGioTra());
+				tongTien += ds.getPhong().getLoaiPhong().getDonGia() * soNgay;
 			}
 
 			model.addRow(new Object[] { khachhang.getMaKH(), khachhang.getTenKH(), khachhang.getCmnd(),
-					khachhang.getNgayHetHan(), khachhang.getSoDienThoai(), khachhang.getLoaiKH(),
-					khachhang.getSoLanDatPhong(),dsdv.size(), Currency.format(tongTien) });
+					formatDate(khachhang.getNgayHetHan()), khachhang.getSoDienThoai(), khachhang.getLoaiKH(),
+					dshdp.size(),dsdv.size(), Currency.format(tongTien) });
 			tongKH++;
 			tongdoanhthu+=tongTien;
 		}
@@ -371,11 +375,12 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		table.repaint();
 	}
 	public void renderData(Date tuNgay, Date toiNgay)
-			throws SQLException, MalformedURLException, RemoteException, NotBoundException {
+			throws MalformedURLException, RemoteException, NotBoundException {
 		KhachHangDao khachHangDao = client.getKhachHangDao();
 		ChiTietDVDao ctDVdao = client.getChiTietDVDao();
 		 ChiTietHoaDonPhongDao cthoaDonPhongDao = client.getChiTietHoaDonPhongDao();
 		dskh = khachHangDao.getListKhachHang();
+	
 		int tongKH = 0;
 		double tongdoanhthu = 0;
 		table.clearSelection();
@@ -389,12 +394,13 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 				tongTien += dv.getDonGia() * dv.getSoLuong();
 			}
 			for (ChiTietHoaDonPhong ds : dshdp) {
-				tongTien += ds.getDonGia();
+				int soNgay = (int) Ngay.tinhKhoangNgay(ds.getHoaDonPhong().getNgayGioNhan(), ds.getHoaDonPhong().getNgayGioTra());
+				tongTien += ds.getPhong().getLoaiPhong().getDonGia() * soNgay;
 			}
 
 			model.addRow(new Object[] { khachhang.getMaKH(), khachhang.getTenKH(), khachhang.getCmnd(),
-					khachhang.getNgayHetHan(), khachhang.getSoDienThoai(), khachhang.getLoaiKH(),
-					khachhang.getSoLanDatPhong(),dsdv.size(), Currency.format(tongTien) });
+					formatDate(khachhang.getNgayHetHan()) , khachhang.getSoDienThoai(), khachhang.getLoaiKH(),
+					dshdp.size(),dsdv.size(), Currency.format(tongTien) });
 			tongKH++;
 			tongdoanhthu+=tongTien;
 		}

@@ -7,7 +7,9 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -36,7 +38,8 @@ public class QuanLyKhachSan_UI extends JFrame{
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
     
     private ThongKeDichVu_UI pageTKeDichVu = new ThongKeDichVu_UI();
-    private ThongKeDoanhThu_UI pageTKeKhachHang = new ThongKeDoanhThu_UI();
+    private ThongKeDoanhThu_UI pageTKeDoanhThu = new ThongKeDoanhThu_UI();
+    private ThongKeKhachHang_UI pageTKeKhachHang = new ThongKeKhachHang_UI();
     
     private QLPhong_UI pageQLPhong = new QLPhong_UI();
     private QLLoaiPhong_UI pageQLLoaiPhong = new QLLoaiPhong_UI();
@@ -58,6 +61,7 @@ public class QuanLyKhachSan_UI extends JFrame{
 	private JMenuItem itemQLLoaiPhong;
 	private JMenuItem itemQLDatPhong;
 	private JMenuItem itemSDDichVu;
+	private JMenuItem itemThongKeDoanhThu;
     
     public static void main(String[] args) throws Exception {
         System.out.println("start!");
@@ -143,8 +147,10 @@ public class QuanLyKhachSan_UI extends JFrame{
         menuBar.add(menuThongKe);
         itemThongKeDV = new JMenuItem("Thống kê dịch vụ");
         itemThongKeKH = new JMenuItem("Thống kê khách hàng");
+        itemThongKeDoanhThu = new JMenuItem("Thống kê doanh thu");
         menuThongKe.add(itemThongKeDV);
         menuThongKe.add(itemThongKeKH);
+        menuThongKe.add(itemThongKeDoanhThu);
 
         // thêm sự kiện click
         itemTrangChu.addActionListener((e) -> {
@@ -170,6 +176,33 @@ public class QuanLyKhachSan_UI extends JFrame{
         });
         itemQLLoaiPhong.addActionListener((e) -> {
         	renderMain(pageQLLoaiPhong.getContentPane(), "loai phong");
+        });
+        itemThongKeDV.addActionListener((e) -> {
+        	try {
+				pageTKeDichVu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	renderMain(pageTKeDichVu.getContentPane(), "thong ke dich vu");
+        });
+        itemThongKeKH.addActionListener((e) -> {
+        	try {
+        		pageTKeKhachHang.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	renderMain(pageTKeKhachHang.getContentPane(), "thong ke khach hang");
+        });
+        itemThongKeDoanhThu.addActionListener((e) -> {
+        	try {
+        		pageTKeDoanhThu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	renderMain(pageTKeDoanhThu.getContentPane(), "thong ke doanh thu");
         });
 //        itemQLKhachHang.addActionListener(this);
 //        itemThongKeDV.addActionListener(this);
