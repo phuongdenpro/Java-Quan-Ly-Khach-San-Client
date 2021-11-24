@@ -156,6 +156,7 @@ public class ThongKeDoanhThu_UI extends JFrame {
 		cboLoaiTK = new JComboBox(modelLoai);
 		cboLoaiTK.setPreferredSize(new Dimension(120, 22));
 		panel_2.add(cboLoaiTK);
+		modelLoai.addElement("Tất cả");
 		modelLoai.addElement("Tùy chỉnh");
 		modelLoai.addElement("Ngày hôm nay");
 		modelLoai.addElement("Ngày hôm qua");
@@ -393,7 +394,7 @@ public class ThongKeDoanhThu_UI extends JFrame {
 
 				Date tuNgay = new Date(ml), toiNgay = new Date(ml); // hom nay
 
-				if (cboLoaiTK.getSelectedIndex() == 0) { // tuy chinh
+				if (cboLoaiTK.getSelectedIndex() == 1) { // tuy chinh
 					try {
 						tuNgay = dpTuNgay.getFullDate();
 						toiNgay = dpToiNgay.getFullDate();
@@ -415,25 +416,59 @@ public class ThongKeDoanhThu_UI extends JFrame {
 						JOptionPane.showMessageDialog(contentPane, "Ngày không hợp lệ");
 						return;
 					}
-				} else if (cboLoaiTK.getSelectedIndex() == 2) { // hom qua
+					try {
+						renderData(tuNgay, toiNgay);
+					} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} else if (cboLoaiTK.getSelectedIndex() == 3) { // hom qua
 					tuNgay = utils.Ngay.homQua();
 					toiNgay = utils.Ngay.homQua();
-				} else if (cboLoaiTK.getSelectedIndex() == 3) { // 7 ngay qua
+					try {
+						renderData(tuNgay, toiNgay);
+					} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} else if (cboLoaiTK.getSelectedIndex() == 4) { // 7 ngay qua
 					tuNgay = utils.Ngay._7NgayQua();
-				} else if (cboLoaiTK.getSelectedIndex() == 4) { // 1 thang qua
+					try {
+						renderData(tuNgay, toiNgay);
+					} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} else if (cboLoaiTK.getSelectedIndex() == 5) { // 1 thang qua
 					tuNgay = utils.Ngay._1ThangQua();
-				} else if (cboLoaiTK.getSelectedIndex() == 5) { // 1 nam qua
+					try {
+						renderData(tuNgay, toiNgay);
+					} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} else if (cboLoaiTK.getSelectedIndex() == 6) { // 1 nam qua
 					tuNgay = utils.Ngay._1NamQua();
+					try {
+						renderData(tuNgay, toiNgay);
+					} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}else if (cboLoaiTK.getSelectedIndex() == 0) { // 1 nam qua
+					try {
+						renderData();
+					} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 		
-				try {
-					renderData(tuNgay, toiNgay);
-				} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				
 			});
 			btnLamMoi.addActionListener((e) -> {
+				dpTuNgay.btn.setEnabled(false);
+				cboLoaiTK.setSelectedIndex(0);
 				try {
 					renderData();
 				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
@@ -446,7 +481,7 @@ public class ThongKeDoanhThu_UI extends JFrame {
 				JOptionPane.showMessageDialog(contentPane, "In báo cáo thành công");
 			});
 		cboLoaiTK.addActionListener((e) -> {
-			if (cboLoaiTK.getSelectedIndex() == 0) {
+			if (cboLoaiTK.getSelectedIndex() == 1) {
 				dpTuNgay.btn.setEnabled(true);
 				dpToiNgay.btn.setEnabled(true);
 			} else {
@@ -458,6 +493,8 @@ public class ThongKeDoanhThu_UI extends JFrame {
 	}
 
 	public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
+		dpTuNgay.btn.setEnabled(false);
+		cboLoaiTK.setSelectedIndex(0);
 		KhachHangDao khachHangDao = client.getKhachHangDao();
 		ChiTietDVDao ctDVdao = client.getChiTietDVDao();
 		ChiTietHoaDonPhongDao cthoaDonPhongDao = client.getChiTietHoaDonPhongDao();

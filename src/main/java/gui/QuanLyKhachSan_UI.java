@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-<<<<<<< HEAD
-=======
 import java.sql.SQLException;
->>>>>>> 5ffccfce035c97c37f0b44fbffe423375104c9c2
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -42,13 +39,10 @@ public class QuanLyKhachSan_UI extends JFrame{
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
     
     private ThongKeDichVu_UI pageTKeDichVu = new ThongKeDichVu_UI();
-<<<<<<< HEAD
     private ThongKeDoanhThu_UI pageTKeDoanhThu = new ThongKeDoanhThu_UI();
-    private ThongKeKhachHang_UI pageTKeKhachHang = new ThongKeKhachHang_UI();
-=======
     private ThongKeKhachHang_UI pageTKKH = new ThongKeKhachHang_UI();
-//    private ThongKeDoanhThu_UI pageTKeKhachHang = new ThongKeDoanhThu_UI();
->>>>>>> 5ffccfce035c97c37f0b44fbffe423375104c9c2
+
+
     
     private QLPhong_UI pageQLPhong = new QLPhong_UI();
     private QLLoaiPhong_UI pageQLLoaiPhong = new QLLoaiPhong_UI();
@@ -223,15 +217,7 @@ public class QuanLyKhachSan_UI extends JFrame{
 			}
         	renderMain(pageTKeDichVu.getContentPane(), "thong ke dich vu");
         });
-        itemThongKeKH.addActionListener((e) -> {
-        	try {
-        		pageTKeKhachHang.renderData();
-			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-        	renderMain(pageTKeKhachHang.getContentPane(), "thong ke khach hang");
-        });
+       
         itemThongKeDoanhThu.addActionListener((e) -> {
         	try {
         		pageTKeDoanhThu.renderData();
@@ -255,7 +241,7 @@ public class QuanLyKhachSan_UI extends JFrame{
         	renderMain(pageTKKH.getContentPane(), "thong ke khach hang");
 			try {
 				pageTKKH.renderData();
-			} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+			} catch (MalformedURLException | RemoteException  | NotBoundException e1) {
 				e1.printStackTrace();
 			}
         });
