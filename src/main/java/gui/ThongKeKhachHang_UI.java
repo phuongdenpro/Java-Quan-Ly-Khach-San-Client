@@ -187,7 +187,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		panel_1.setLayout(new BorderLayout(0, 0));
 
 		String[] cols = { "Mã khách hàng", "Tên khách hàng", "CMND", "Ngày hết hạn", "Số điện thoại", "Loại khách hàng",
-				"Số lần đặt phòng", "Số lần gọi dịch vụ", "Số tiền đã trả" };
+				"Số lần đặt phòng", "Số lần gọi dịch vụ", "Tổng tiền trả" };
 		model = new DefaultTableModel(cols, 0);
 		table = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -263,6 +263,13 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			}else if (cboLoaiTK.getSelectedIndex() == 2) { //hom nay
+				try {
+					renderData(tuNgay, toiNgay);
+				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			} else if (cboLoaiTK.getSelectedIndex() == 3) { // hom qua
 				tuNgay = utils.Ngay.homQua();
 				toiNgay = utils.Ngay.homQua();
@@ -308,6 +315,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		});
 		btnLamMoi.addActionListener((e) -> {
 			dpTuNgay.btn.setEnabled(false);
+			dpToiNgay.btn.setEnabled(false);
 			cboLoaiTK.setSelectedIndex(0);
 			try {
 				renderData();
@@ -374,6 +382,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 
 	public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
 		dpTuNgay.btn.setEnabled(false);
+		dpToiNgay.btn.setEnabled(false);
 		cboLoaiTK.setSelectedIndex(0);
 		KhachHangDao khachHangDao = client.getKhachHangDao();
 		ChiTietDVDao ctDVdao = client.getChiTietDVDao();

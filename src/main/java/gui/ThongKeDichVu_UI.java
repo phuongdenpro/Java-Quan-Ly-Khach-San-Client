@@ -85,7 +85,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		new ThongKeDichVu_UI().setVisible(true);
 	}
 
-	public ThongKeDichVu_UI(){
+	public ThongKeDichVu_UI() {
 		try {
 			client = new Client();
 		} catch (IOException | NotBoundException e) {
@@ -251,6 +251,13 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			} else if (cboLoaiTK.getSelectedIndex() == 2) { //hom nay
+				try {
+					renderData(tuNgay, toiNgay);
+				} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			} else if (cboLoaiTK.getSelectedIndex() == 3) { // hom qua
 				tuNgay = utils.Ngay.homQua();
 				toiNgay = utils.Ngay.homQua();
@@ -284,7 +291,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}else if (cboLoaiTK.getSelectedIndex() == 0) { // 1 nam qua
+			} else if (cboLoaiTK.getSelectedIndex() == 0) { // 1 nam qua
 				try {
 					renderData();
 				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
@@ -293,10 +300,10 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 				}
 			}
 
-			
 		});
 		btnLamMoi.addActionListener((e) -> {
 			dpTuNgay.btn.setEnabled(false);
+			dpToiNgay.btn.setEnabled(false);
 			cboLoaiTK.setSelectedIndex(0);
 			try {
 				renderData();
@@ -363,6 +370,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 
 	public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
 		dpTuNgay.btn.setEnabled(false);
+		dpToiNgay.btn.setEnabled(false);
 		cboLoaiTK.setSelectedIndex(0);
 		ChiTietDVDao ctdichVuDao = client.getChiTietDVDao();
 		dsdv = ctdichVuDao.getListChiTietDV();
@@ -380,17 +388,17 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 				tinhTrang = "Đã thanh toán";
 			model.addRow(new Object[] { dichvu.getHoaDonDV().getMaHDDV(), dichvu.getDichVu().getMaDV(),
 					dichvu.getDichVu().getTenDV(), dichvu.getSoLuong(), Currency.format(dichvu.getDonGia()),
-					Currency.format(dichvu.getSoLuong() * dichvu.getDonGia()), formatDate(dichvu.getHoaDonDV().getNgayGioDat()),
-					tinhTrang, dichvu.getHoaDonDV().getKhachHang().getMaKH(),
-					dichvu.getHoaDonDV().getKhachHang().getTenKH()
+					Currency.format(dichvu.getSoLuong() * dichvu.getDonGia()),
+					formatDate(dichvu.getHoaDonDV().getNgayGioDat()), tinhTrang,
+					dichvu.getHoaDonDV().getKhachHang().getMaKH(), dichvu.getHoaDonDV().getKhachHang().getTenKH()
 
 			});
-			
+
 			tongSoTien += dichvu.getSoLuong() * dichvu.getDonGia();
 			tongSoBan++;
-			if(!isExisted(dichvu.getDichVu().getTenDV(), s))
+			if (!isExisted(dichvu.getDichVu().getTenDV(), s))
 				s.add(dichvu.getDichVu().getTenDV());
-				
+
 		}
 		;
 		lblTongSoTien.setText(Currency.format(tongSoTien));
@@ -419,15 +427,15 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 				tinhTrang = "Đã thanh toán";
 			model.addRow(new Object[] { dichvu.getHoaDonDV().getMaHDDV(), dichvu.getDichVu().getMaDV(),
 					dichvu.getDichVu().getTenDV(), dichvu.getSoLuong(), Currency.format(dichvu.getDonGia()),
-					Currency.format(dichvu.getSoLuong() * dichvu.getDonGia()), formatDate(dichvu.getHoaDonDV().getNgayGioDat()),
-					tinhTrang, dichvu.getHoaDonDV().getKhachHang().getMaKH(),
-					dichvu.getHoaDonDV().getKhachHang().getTenKH()
-					
+					Currency.format(dichvu.getSoLuong() * dichvu.getDonGia()),
+					formatDate(dichvu.getHoaDonDV().getNgayGioDat()), tinhTrang,
+					dichvu.getHoaDonDV().getKhachHang().getMaKH(), dichvu.getHoaDonDV().getKhachHang().getTenKH()
+
 			});
-			
+
 			tongSoTien += dichvu.getSoLuong() * dichvu.getDonGia();
 			tongSoBan++;
-			if(!isExisted(dichvu.getDichVu().getTenDV(), s))
+			if (!isExisted(dichvu.getDichVu().getTenDV(), s))
 				s.add(dichvu.getDichVu().getTenDV());
 		}
 		;
@@ -445,12 +453,11 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		return sdf.format(date);
 	}
 
-	public boolean isExisted(Object obj,ArrayList<String> s) {
+	public boolean isExisted(Object obj, ArrayList<String> s) {
 		for (int i = 0; i < s.size(); i++)
 			if (obj.equals(s.get(i)))
 				return true;
 		return false;
 	}
-
 
 }

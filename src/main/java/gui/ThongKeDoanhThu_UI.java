@@ -422,6 +422,13 @@ public class ThongKeDoanhThu_UI extends JFrame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+				}else if (cboLoaiTK.getSelectedIndex() == 2) { //hom nay
+					try {
+						renderData(tuNgay, toiNgay);
+					} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				} else if (cboLoaiTK.getSelectedIndex() == 3) { // hom qua
 					tuNgay = utils.Ngay.homQua();
 					toiNgay = utils.Ngay.homQua();
@@ -468,6 +475,7 @@ public class ThongKeDoanhThu_UI extends JFrame {
 			});
 			btnLamMoi.addActionListener((e) -> {
 				dpTuNgay.btn.setEnabled(false);
+				dpToiNgay.btn.setEnabled(false);
 				cboLoaiTK.setSelectedIndex(0);
 				try {
 					renderData();
@@ -494,6 +502,7 @@ public class ThongKeDoanhThu_UI extends JFrame {
 
 	public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
 		dpTuNgay.btn.setEnabled(false);
+		dpToiNgay.btn.setEnabled(false);
 		cboLoaiTK.setSelectedIndex(0);
 		KhachHangDao khachHangDao = client.getKhachHangDao();
 		ChiTietDVDao ctDVdao = client.getChiTietDVDao();
