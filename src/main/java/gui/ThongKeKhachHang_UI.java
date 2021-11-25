@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -86,9 +88,16 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 
 	private List<ChiTietDV> dsdv;
 
+	private List<ChiTietDV> dsdvRender;
+
 	private ChiTietDVDao ctDVdao;
 
 	private List<ChiTietHoaDonPhong> dshdp;
+
+	private Date tuNgay;
+
+	private Date toiNgay;
+	private boolean result;
 
 	public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException {
 		new ThongKeKhachHang_UI().setVisible(true);
@@ -154,21 +163,6 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		// dpToiNgay = new kDatePicker();
 		panel_2.add(dpToiNgay);
 
-//		JPanel panel_6 = new JPanel();
-//		panel_2.add(panel_6);
-//
-//		JLabel lblSoLuongToiDa = new JLabel("Số lượng KH tối đa: ");
-//		panel_6.add(lblSoLuongToiDa);
-//
-//		modelLimit = new DefaultComboBoxModel<Integer>();
-//		cboLimit = new JComboBox(modelLimit);
-//		cboLimit.setEditable(true);
-//		panel_6.add(cboLimit);
-//		modelLimit.addElement(10);
-//		modelLimit.addElement(25);
-//		modelLimit.addElement(50);
-//		modelLimit.addElement(100);
-//		modelLimit.addElement(500);
 		panel_2.add(Box.createHorizontalStrut(20));
 		JButton btnThongKe = new JButton("Thống kê", new ImageIcon("data/images/statistics.png"));
 		btnThongKe.setPreferredSize(new Dimension(150, 25));
@@ -188,7 +182,14 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 
 		String[] cols = { "Mã khách hàng", "Tên khách hàng", "CMND", "Ngày hết hạn", "Số điện thoại", "Loại khách hàng",
 				"Số lần đặt phòng", "Số lần gọi dịch vụ", "Tổng tiền trả" };
-		model = new DefaultTableModel(cols, 0);
+		model = new DefaultTableModel(cols, 0) {
+			// khóa không cho người dùng nhập trên table
+			@Override
+			public boolean isCellEditable(int i, int i1) {
+				return false;
+			}
+		};
+
 		table = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel_1.add(scrollPane);
@@ -228,12 +229,14 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
+
 		btnThongKe.addActionListener((e) -> {
 			long ml = System.currentTimeMillis();
 //	        ml = ml/86400000*86400000;
 			Date now = new Date(ml);
 
-			Date tuNgay = new Date(ml), toiNgay = new Date(ml); // hom nay
+			tuNgay = new Date(ml);
+			toiNgay = new Date(ml); // hom nay
 
 			if (cboLoaiTK.getSelectedIndex() == 1) { // tuy chinh
 				try {
@@ -263,7 +266,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}else if (cboLoaiTK.getSelectedIndex() == 2) { //hom nay
+			} else if (cboLoaiTK.getSelectedIndex() == 2) { // hom nay
 				try {
 					renderData(tuNgay, toiNgay);
 				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
@@ -303,7 +306,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			} else if (cboLoaiTK.getSelectedIndex() == 0) { // 1 nam qua
+			} else if (cboLoaiTK.getSelectedIndex() == 0) {
 				try {
 					renderData();
 				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
@@ -337,7 +340,31 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 		btnIn.addActionListener((e) -> {
 			JOptionPane.showMessageDialog(contentPane, "In báo cáo thành công");
 		});
-
+		table.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				// JTable table =(JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				// lấy row được click double
+				int row = table.rowAtPoint(point);
+				String ma = model.getValueAt(row, 0).toString();
+				if (mouseEvent.getClickCount() == 2) {
+					// làm gì khi click double ở đây
+					setTuNgayToiNgay();
+					try {
+						DialogLichDatKhachHang khachHang = new DialogLichDatKhachHang();
+						khachHang.setMaKH(Integer.parseInt(ma));
+						khachHang.setResult(result);
+						khachHang.setTuNgay(tuNgay);
+						khachHang.setToiNgay(toiNgay);
+						khachHang.renderData();
+						khachHang.setVisible(true);
+					} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 	}
 
 	public JPanel getContentPane() {
@@ -347,7 +374,6 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -462,6 +488,69 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 			return "Chưa cập nhật";
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		return sdf.format(date);
+	}
+
+	public boolean setTuNgayToiNgay() {
+		long ml = System.currentTimeMillis();
+		Date now = new Date(ml);
+		tuNgay = new Date(ml);
+		toiNgay = new Date(ml);
+		if (cboLoaiTK.getSelectedIndex() == 1) { // tuy chinh
+			try {
+				tuNgay = dpTuNgay.getFullDate();
+				toiNgay = dpToiNgay.getFullDate();
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			result = true;
+
+			if (tuNgay.after(now)) {
+				JOptionPane.showMessageDialog(contentPane, "Từ ngày không hợp lệ");
+				return false;
+			}
+
+			if (toiNgay.after(now)) {
+				JOptionPane.showMessageDialog(contentPane, "Tới ngày không hợp lệ");
+				return false;
+			}
+
+			if (tuNgay.after(toiNgay)) {
+				JOptionPane.showMessageDialog(contentPane, "Ngày không hợp lệ");
+				return false;
+			}
+			return true;
+
+		} else if (cboLoaiTK.getSelectedIndex() == 2) { // hom nay
+			tuNgay = new Date(ml);
+			toiNgay = new Date(ml);
+			result = true;
+			return true;
+		} else if (cboLoaiTK.getSelectedIndex() == 3) { // hom qua
+			tuNgay = utils.Ngay.homQua();
+			toiNgay = utils.Ngay.homQua();
+			result = true;
+			return true;
+
+		} else if (cboLoaiTK.getSelectedIndex() == 4) { // 7 ngay qua
+			tuNgay = utils.Ngay._7NgayQua();
+			result = true;
+			return true;
+
+		} else if (cboLoaiTK.getSelectedIndex() == 5) { // 1 thang qua
+			tuNgay = utils.Ngay._1ThangQua();
+			result = true;
+			return true;
+
+		} else if (cboLoaiTK.getSelectedIndex() == 6) { // 1 nam qua
+			tuNgay = utils.Ngay._1NamQua();
+			result = true;
+			return true;
+
+		}else if (cboLoaiTK.getSelectedIndex() == 0) {
+			result = false;
+			return true;
+		}
+		return false;
 	}
 
 }
