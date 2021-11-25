@@ -186,7 +186,7 @@ public class QuanLyDichVu_UI extends JFrame{
         btnTim.addActionListener((e) -> {
         	String tenDV = txtTim.getText();
         	for(int i=0; i<dsdv.size(); i++) {
-        		if(dsdv.get(i).getTenDV().equals(tenDV)) {
+        		if(dsdv.get(i).getTenDV().contains(tenDV)) {
         			System.out.println(i);
         			table.setRowSelectionInterval(i, i);
         			return;
@@ -222,12 +222,17 @@ public class QuanLyDichVu_UI extends JFrame{
             JOptionPane.showMessageDialog(pnMain, "Thêm thất bại");
         });
       btnSua.addActionListener((e) -> {
-        	
+        	int idx = table.getSelectedRow();
+        	if(idx == -1) {
+        		JOptionPane.showMessageDialog(pnMain, "Vui lòng chọn dịch vụ để sửa");
+        		return;
+        	}
+    	  
         	if(checkData() == false)
         		return;
         	
         	DichVu dv = new DichVu(
-        			Integer.parseInt(txtMaDV.getText()), 
+        			dsdv.get(idx).getMaDV(), 
         			txtTenDV.getText(), 
         			Double.parseDouble(txtDonGia.getText()));
             

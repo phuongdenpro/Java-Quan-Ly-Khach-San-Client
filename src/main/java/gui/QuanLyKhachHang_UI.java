@@ -268,7 +268,12 @@ public class QuanLyKhachHang_UI extends JFrame{
         
         btnSua.addActionListener((e) -> {
         	
-            //   
+            //  
+        		int idx = tableShowInfo.getSelectedRow();
+        		if(idx == -1) {
+        			JOptionPane.showMessageDialog(pnMain, "Vui lòng chọn khách hàng để sửa");
+        			return;
+        		}
                	
                	if(txtTenKH.getText().trim().equals("")){
                        renderError(txtTenKH, "Tên khách hàng không được để trống");
@@ -304,31 +309,30 @@ public class QuanLyKhachHang_UI extends JFrame{
        				e2.printStackTrace();
        			}
        			
-               	
+//               	int maKH, String tenKH, String cmnd, String soDienThoai, Date ngayHetHan, String loaiKH
        			
-               	KhachHang a = new KhachHang(,ten, cmnd, sdt, date,(String)cboLoaiKhach.getSelectedItem());
-                   try {
-           				if(client.getKhachHangDao().capNhatKhachHang(a)) {
-           					JOptionPane.showMessageDialog(pnMain, "Sửa thành công");
-           					
-           					renderData();
-           					
-           					return;
-           				}
-           			} catch (HeadlessException | RemoteException | MalformedURLException | NotBoundException e1) {
-           				// TODO Auto-generated catch block
-           				e1.printStackTrace();
-           			}
+               KhachHang a = new KhachHang(dskh.get(idx).getMaKH() ,ten, cmnd, sdt, date, (String)cboLoaiKhach.getSelectedItem());
+               try {
+       				if(client.getKhachHangDao().capNhatKhachHang(a)) {
+       					JOptionPane.showMessageDialog(pnMain, "Sửa thành công");
+       					
+       					renderData();
+       					return;
+       				}
+       			} catch (HeadlessException | RemoteException | MalformedURLException | NotBoundException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
                        
-                       JOptionPane.showMessageDialog(pnMain, "Sửa thất bại");
+               JOptionPane.showMessageDialog(pnMain, "Sửa thất bại");
                	
-               });
+        });
         
  
         btnTim.addActionListener((e) -> {
         	String tenKH = txtTim.getText();
         	for(int i=0; i<dskh.size(); i++) {
-        		if(dskh.get(i).getTenKH().equals(tenKH)) {
+        		if(dskh.get(i).getTenKH().contains(tenKH)) {
         			System.out.println(i);
         			tableShowInfo.setRowSelectionInterval(i, i);
         			return;
@@ -428,8 +432,7 @@ public class QuanLyKhachHang_UI extends JFrame{
         		khachhang.getCmnd(),
         		khachhang.getSoDienThoai(),
         		khachhang.getNgayHetHan(),
-        		khachhang.getLoaiKH(),
-        		khachhang.getSoLanDatPhong()
+        		khachhang.getLoaiKH()
         		    		
         	});
         };
