@@ -300,7 +300,6 @@ public class QLLoaiPhong_UI extends JFrame{
     
     public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
     	dslp = client.getLoaiPhongDao().getDSLoaiPhong();
-        
         table.clearSelection();
         model.getDataVector().removeAllElements();
         for(int j=0; j<dslp.size(); j++) {

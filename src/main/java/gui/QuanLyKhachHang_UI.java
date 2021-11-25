@@ -2,6 +2,10 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.sql.*;
 import java.text.*;
@@ -9,6 +13,16 @@ import java.text.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
+import java.util.List;
+
+import app.Client;
+import utils.Currency;
+import utils.Ngay;
+import model.DichVu;
+import model.KhachHang;
+import model.LoaiPhong;
+import dao.KhachHangDao;
+import dao.impl.KhachHangImpl;
 
 
 public class QuanLyKhachHang_UI extends JFrame{
@@ -17,10 +31,12 @@ public class QuanLyKhachHang_UI extends JFrame{
     private DefaultTableModel modelTable;
     private JTable tableShowInfo;
     private kDatePicker dpNgayHetHan;
-    private JTextField txtMaKH, txtTenKH, txtCMND, txtSoLanDat, txtTim;
+    private JTextField txtMaKH, txtTenKH, txtCMND, txtSoLanDat, txtTim,txtSDT;
     private JButton btnTim, btnThem, btnSua, btnXoa, btnLamLai, btnXemTatCa;
     private JComboBox<String> cboLoaiKhach;
     private JLabel lbShowMessages;
+    private List<KhachHang> dskh;
+    private Client client;
     private final int SUCCESS = 1, ERROR = 0, ADD = 1, UPDATE = 2;
     ImageIcon blueAddIcon = new ImageIcon("data/images/blueAdd_16.png");
     ImageIcon editIcon = new ImageIcon("data/images/edit2_16.png");
@@ -30,8 +46,14 @@ public class QuanLyKhachHang_UI extends JFrame{
     ImageIcon checkIcon = new ImageIcon("data/images/check2_16.png");
     ImageIcon errorIcon = new ImageIcon("data/images/cancel_16.png");
 
-    public QuanLyKhachHang_UI() {
-        setSize(1000, 670);
+    public QuanLyKhachHang_UI() throws MalformedURLException, RemoteException, NotBoundException {
+  		try {
+  			client = new Client();
+  		} catch (IOException e2) {
+  			// TODO Auto-generated catch block
+  			e2.printStackTrace();
+  		}
+    	setSize(1000, 670);
         setTitle("Quản Lý Khách Hàng");
         setLocationRelativeTo(null);
         setResizable(false);
@@ -101,16 +123,16 @@ public class QuanLyKhachHang_UI extends JFrame{
         dpNgayHetHan = new kDatePicker(205);
         dpNgayHetHan.setBounds(145, 93, 205, 20);
         pnThongTinKH.add(dpNgayHetHan);
-
-        JLabel lbSoLanDat = new JLabel("Số lần đặt phòng:");
-        lbSoLanDat.setBounds(10, 150, 112, 16);
-        pnThongTinKH.add(lbSoLanDat);
-
-        txtSoLanDat = new JTextField();
-        txtSoLanDat.setText("0");
-        txtSoLanDat.setBounds(145, 148, 205, 20);
-        pnThongTinKH.add(txtSoLanDat);
-        txtSoLanDat.setColumns(10);
+ 
+        JLabel lbSDT = new JLabel("Số Điện Thoại:");
+        lbSDT.setBounds(10, 150, 112, 16);
+        pnThongTinKH.add(lbSDT);
+        
+        txtSDT = new JTextField();
+        txtSDT.setText("");
+        txtSDT.setBounds(145, 148, 205, 20);
+        pnThongTinKH.add(txtSDT);
+        txtSDT.setColumns(10);
 
         btnThem = new JButton("Thêm", blueAddIcon);
         btnThem.setBounds(10, 207, 98, 26);
@@ -157,7 +179,7 @@ public class QuanLyKhachHang_UI extends JFrame{
         pbTableKH.add(pnShowTableKH);
         pnShowTableKH.setLayout(new BorderLayout(0, 0));
 
-        String[] cols = { "Mã KH", "Tên KH", "CMND", "Ngày hết hạn", "Loại KH", "Số lần đặt phòng" };
+        String[] cols = { "Mã KH", "Tên KH", "CMND","SĐT", "Ngày hết hạn", "Quốc Tịch" };
         modelTable = new DefaultTableModel(cols, 0) {
             // khóa sửa dữ liệu trực tiếp trên table
             @Override
@@ -170,13 +192,175 @@ public class QuanLyKhachHang_UI extends JFrame{
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         pnShowTableKH.add(scpShowTableKH, BorderLayout.CENTER);
 
-        btnXemTatCa = new JButton("Xem tất cả");
-        btnXemTatCa.setBounds(411, 18, 121, 26);
-        pbTableKH.add(btnXemTatCa);
+        //btnXemTatCa = new JButton("Xem tất cả");
+        //btnXemTatCa.setBounds(411, 18, 121, 26);
+        //pbTableKH.add(btnXemTatCa);
+        
+        reSizeColumnTable();
+        
+       renderData();
+       tableShowInfo.getSelectionModel().addListSelectionListener((e) -> {
+        	int idx = tableShowInfo.getSelectedRow();
+        	if(idx != -1) {
+        		KhachHang kh = dskh.get(idx);
+        		showKhachHang(kh);
+        		
+        		
+        	}
+        });
+        btnThem.addActionListener((e) -> {
+        	
+     //   
+        	
+        	if(txtTenKH.getText().trim().equals("")){
+                renderError(txtTenKH, "Tên khách hàng không được để trống");
+                return;
+            }
+        	   if(!txtTenKH.getText().matches("^[^0-9]{2,25}$")){
+                   renderError(txtTenKH, "Tên khách hàng không được chứa chữ số, ít nhất là 2 ký tự");
+                   return;
+               }
+        	   if(txtCMND.getText().trim().equals("")){
+                   renderError(txtCMND, "Cmnd không được để trống");
+                   return;
+               }
 
+               if(!txtCMND.getText().matches("^(\\d{9}|\\d{12})$")){
+                   renderError(txtTenKH, "Cmnd chỉ được chứa chữ số, bao gồm 9 hoặc 12 ký tự");
+                   return;
+               }
+               
+               if(!txtSDT.getText().matches("^0[0-9]{9}$")){
+   	            renderError(txtSDT, "Số điện thoại gồm 10 số và phải bắt đầu từ số 0");
+   	            return;
+               }
+        	String ten = txtTenKH.getText();
+        	String cmnd = txtCMND.getText();
+        	String sdt = txtSDT.getText();
+        	
+			Date date = Ngay.homNay();
+			try {
+				date = dpNgayHetHan.getFullDate();
+			} catch (ParseException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+        	
+
+        	KhachHang kh = new KhachHang(ten, cmnd, sdt, date,(String)cboLoaiKhach.getSelectedItem());
+            try {
+    				if(client.getKhachHangDao().themKhachHang(kh)) {
+    					JOptionPane.showMessageDialog(pnMain, "Thêm thành công");
+    					
+    					renderData();
+    					
+    					return;
+    				}
+    			} catch (HeadlessException | RemoteException | MalformedURLException | NotBoundException e1) {
+    				// TODO Auto-generated catch block
+    				e1.printStackTrace();
+    			}
+                
+                JOptionPane.showMessageDialog(pnMain, "Thêm thất bại");
+        	
+        });
+        
+        btnSua.addActionListener((e) -> {
+        	
+            //   
+               	
+               	if(txtTenKH.getText().trim().equals("")){
+                       renderError(txtTenKH, "Tên khách hàng không được để trống");
+                       return;
+                   }
+               	   if(!txtTenKH.getText().matches("^[^0-9]{2,25}$")){
+                          renderError(txtTenKH, "Tên khách hàng không được chứa chữ số, ít nhất là 2 ký tự");
+                          return;
+                      }
+               	   if(txtCMND.getText().trim().equals("")){
+                          renderError(txtCMND, "Cmnd không được để trống");
+                          return;
+                      }
+
+                      if(!txtCMND.getText().matches("^(\\d{9}|\\d{12})$")){
+                          renderError(txtTenKH, "Cmnd chỉ được chứa chữ số, bao gồm 9 hoặc 12 ký tự");
+                          return;
+                      }
+                      
+                      if(!txtSDT.getText().matches("^0[0-9]{9}$")){
+          	            renderError(txtSDT, "Số điện thoại gồm 10 số và phải bắt đầu từ số 0");
+          	            return;
+                      }
+               	String ten = txtTenKH.getText();
+               	String cmnd = txtCMND.getText();
+               	String sdt = txtSDT.getText();
+               //	int makh = Integer.parseInt(s)
+       			Date date = Ngay.homNay();
+       			try {
+       				date = dpNgayHetHan.getFullDate();
+       			} catch (ParseException e2) {
+       				// TODO Auto-generated catch block
+       				e2.printStackTrace();
+       			}
+       			
+               	
+       			
+               	KhachHang a = new KhachHang(,ten, cmnd, sdt, date,(String)cboLoaiKhach.getSelectedItem());
+                   try {
+           				if(client.getKhachHangDao().capNhatKhachHang(a)) {
+           					JOptionPane.showMessageDialog(pnMain, "Sửa thành công");
+           					
+           					renderData();
+           					
+           					return;
+           				}
+           			} catch (HeadlessException | RemoteException | MalformedURLException | NotBoundException e1) {
+           				// TODO Auto-generated catch block
+           				e1.printStackTrace();
+           			}
+                       
+                       JOptionPane.showMessageDialog(pnMain, "Sửa thất bại");
+               	
+               });
+        
+ 
+        btnTim.addActionListener((e) -> {
+        	String tenKH = txtTim.getText();
+        	for(int i=0; i<dskh.size(); i++) {
+        		if(dskh.get(i).getTenKH().equals(tenKH)) {
+        			System.out.println(i);
+        			tableShowInfo.setRowSelectionInterval(i, i);
+        			return;
+        		}
+        	}
+        	JOptionPane.showMessageDialog(pnMain, "Không tìm thấy");
+        });
+        btnLamLai.addActionListener((e) -> {
+        	clear();
+        });
+        btnXoa.addActionListener((e) -> {
+          	int idx = tableShowInfo.getSelectedRow();
+          	if(idx != -1) {
+          		int makh = dskh.get(idx).getMaKH();
+          		try {
+    					if(client.getKhachHangDao().xoaKhachHang(makh)) {
+    						JOptionPane.showMessageDialog(pnMain, "Xóa thành công");
+    						renderData();
+    						return;
+    					}
+    				} catch (RemoteException | MalformedURLException | NotBoundException e1) {
+    					e1.printStackTrace();
+    				}
+          		
+          		JOptionPane.showMessageDialog(pnMain, "Xóa thất bại");
+          	}
+          });
+          
     }
-
-    public static void main(String[] args) {
+    
+    
+    public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
         new QuanLyKhachHang_UI().setVisible(true);
     }
 
@@ -211,7 +395,7 @@ public class QuanLyKhachHang_UI extends JFrame{
         String TenKH = txtTim.getText().trim();
         if (!(TenKH.length() > 0)) {
             showMessage("Lỗi: Tên không được để trống", txtTim);
-            return false;
+           return false;
         }
         return true;
     }
@@ -230,5 +414,50 @@ public class QuanLyKhachHang_UI extends JFrame{
         tableShowInfo.getColumnModel().getColumn(3).setPreferredWidth(85);
         tableShowInfo.getColumnModel().getColumn(4).setPreferredWidth(70);
         tableShowInfo.getColumnModel().getColumn(5).setPreferredWidth(80);
+    }
+    public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
+    	
+    	dskh = client.getKhachHangDao().getListKhachHang();
+    	tableShowInfo.clearSelection();
+    	modelTable.getDataVector().removeAllElements();
+        for(int j=0; j<dskh.size(); j++) {
+        	KhachHang khachhang = dskh.get(j);
+        	modelTable.addRow(new Object[] {
+        		khachhang.getMaKH(),
+        		khachhang.getTenKH(),
+        		khachhang.getCmnd(),
+        		khachhang.getSoDienThoai(),
+        		khachhang.getNgayHetHan(),
+        		khachhang.getLoaiKH(),
+        		khachhang.getSoLanDatPhong()
+        		    		
+        	});
+        };
+        tableShowInfo.revalidate();
+        tableShowInfo.repaint();
+    }
+    public void clear() {
+    	txtMaKH.setText("");
+    	txtTenKH.setText("");
+    	txtCMND.setText("0");
+    	txtSDT.setText("");
+    	cboLoaiKhach.setSelectedIndex(0);
+    	
+    }
+    public void renderError(JTextField a, String message){
+        a.requestFocus();
+        a.selectAll();
+        JOptionPane.showMessageDialog(pnMain, message);
+    }
+    public void showKhachHang(KhachHang kh) {
+    	txtMaKH.setText(String.valueOf(kh.getMaKH()));
+    	txtTenKH.setText(String.valueOf(kh.getTenKH()));
+    	txtCMND.setText(kh.getCmnd());
+    	txtSDT.setText(kh.getSoDienThoai());
+    	dpNgayHetHan.setValue(kh.getNgayHetHan());
+    	if(kh.getLoaiKH().toLowerCase().equals("nước ngoài"))
+    		cboLoaiKhach.setSelectedIndex(1);
+    	else
+    		cboLoaiKhach.setSelectedIndex(0);
     }
 }
