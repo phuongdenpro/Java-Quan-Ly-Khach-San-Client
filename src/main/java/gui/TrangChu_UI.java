@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
@@ -28,12 +30,16 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import app.Client;
 import dao.impl.LoaiPhongImpl;
 import dao.impl.PhongImpl;
+import model.ChiTietHoaDonPhong;
+import model.HoaDonDV;
+import model.HoaDonPhong;
 import model.LoaiPhong;
 import model.Phong;
 
@@ -89,12 +95,13 @@ public class TrangChu_UI extends JFrame{
 
     public void start(){
     	renderGUI();
-        renderLoaiPhong();
+    	renderData();
     }
 
     public void renderGUI() {
         // nội dung page trang chủ ở đây
     	setSize(new Dimension(1350, 600));
+    	setDefaultCloseOperation(EXIT_ON_CLOSE);
         contentPane = new JPanel();
         setContentPane(contentPane);
         contentPane.setLayout(new BorderLayout(0, 0));
@@ -174,7 +181,7 @@ public class TrangChu_UI extends JFrame{
         gl_pnPhongTrong.setHgap(20);
         pnPhongTrong.setLayout(gl_pnPhongTrong);
         
-        renderDSPhong();
+        
         
         Component horizontalStrut_1 = Box.createHorizontalStrut(50);
         panel.add(horizontalStrut_1);
@@ -183,6 +190,11 @@ public class TrangChu_UI extends JFrame{
 			renderDSPhong();
         });
         
+    }
+    
+    public void renderData() {
+    	renderLoaiPhong();
+        renderDSPhong();
     }
     
     public void renderDSPhong() {
@@ -223,6 +235,12 @@ public class TrangChu_UI extends JFrame{
     }
 
     public void renderPhong(Phong phong){
+    	try {
+			phong.setTinhTrang(client.getPhongDao().getTinhTrangPhongHomNay(phong.getMaPhong()));
+		} catch (RemoteException | MalformedURLException | NotBoundException e1) {
+			e1.printStackTrace();
+		}
+    	
     	JButton btnPhong = new JButton();
     	btnPhong.setBackground(Color.WHITE);
     	btnPhong.setPreferredSize(new Dimension(150, 150));
@@ -351,29 +369,69 @@ public class TrangChu_UI extends JFrame{
             pn_p_bottom.add(btn_XemLichDat, c);
             
         }else if(phong.getTinhTrang() == 1){ // đã đặt
-            pn_p_bottom.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx = 0;
-            c.gridy = 0;
-            c.insets = new Insets(5, 5, 5, 5);
-            pn_p_bottom.add(btn_DatPhong, c);
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx = 1;
-            c.gridy = 0;
-            c.insets = new Insets(5, 5, 5, 5);
-            pn_p_bottom.add(btn_NhanPhong, c);
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx = 0;
-            c.gridy = 1;
-            c.gridwidth = 2;
-            c.insets = new Insets(5, 5, 5, 5);
-            pn_p_bottom.add(btn_XemLichDat, c);
+            pn_p_bottom.add(btn_DatPhong);
+            pn_p_bottom.add(btn_XemLichDat);
             
         }else{// trống
             pn_p_bottom.add(btn_DatPhong);
+            pn_p_bottom.add(btn_XemLichDat);
         }
         popup.setVisible(true);
+        
+        btn_DatPhong.addActionListener(e -> {
+        	popup.setVisible(false);
+        	DatPhong_UI pgDatPhong = new DatPhong_UI();
+        	pgDatPhong.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        	pgDatPhong.setVisible(true);
+        	pgDatPhong.setPhong(phong.getMaPhong());
+        	pgDatPhong.addWindowListener(new WindowAdapter() {
+        		@Override
+        	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        	        renderData();
+        			pgDatPhong.dispose();
+        	    }
+        	});
+        });
+        
+        btn_XemLichDat.addActionListener(e -> {
+        	popup.setVisible(false);
+        	DialogLichDatPhong dialog = new DialogLichDatPhong();
+        	dialog.setMaPhong(phong.getMaPhong());
+        	dialog.renderData();
+        	dialog.setVisible(true);
+        });
+        
+        btn_ThanhToan.addActionListener(e -> {
+        	popup.setVisible(false);
+        	HoaDonPhong hdp = null;
+        	HoaDonDV hddv = null;
+        	
+        	try {
+				hdp = client.getHoaDonPhongDao().getHDPThanhToanByMaPhong(phong.getMaPhong());
+			} catch (RemoteException | MalformedURLException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
+        	
+        	try {
+				hddv = client.getHoaDonDVDao().getHDDVChuaThanhToanByMaKH(hdp.getKhachHang().getMaKH());
+			} catch (RemoteException | MalformedURLException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
+        	
+        	
+            ThanhToan_UI pageThanhToan = new ThanhToan_UI(hdp, hddv);
+            pageThanhToan.renderData();
+            pageThanhToan.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            pageThanhToan.setVisible(true);
+            pageThanhToan.addWindowListener(new WindowAdapter() {
+        		@Override
+        	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        	        renderData();
+        	        pageThanhToan.dispose();
+        	    }
+        	});
+        });
+        
     }
 
 

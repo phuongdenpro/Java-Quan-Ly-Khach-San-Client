@@ -69,12 +69,21 @@ public class ThanhToan_UI extends JFrame{
 		}
     	this.hdp = hdp;
     	this.hddv = hddv;
+    	
     	try {
         	dsCTHDP = client.getChiTietHoaDonPhongDao().getListChiTietHDPByMaHD(hdp.getMaHD());
-			dsCTDV = client.getChiTietDVDao().getListChiTietDVByMaHDDV(hddv.getMaHDDV());
+        	this.hdp.setDsChiTietHoaDonPhong(dsCTHDP);
 		} catch (RemoteException | MalformedURLException | NotBoundException e) {
 			e.printStackTrace();
 		}
+    	if(this.hddv != null) {
+	    	try {
+	    		dsCTDV = client.getChiTietDVDao().getListChiTietDVByMaHDDV(hddv.getMaHDDV());
+				this.hddv.setDsChiTietDV(dsCTDV);
+	    	}catch (Exception e) {
+	    		e.printStackTrace();
+			}
+    	}
     	start();
     }
     
@@ -85,16 +94,7 @@ public class ThanhToan_UI extends JFrame{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
-    	try {
-        	hdp = client.getHoaDonPhongDao().getHDPbyMaHD(1);
-        	dsCTHDP = client.getChiTietHoaDonPhongDao().getListChiTietHDPByMaHD(hdp.getMaHD());
-			hddv = client.getHoaDonDVDao().getHDDVbyMaHDDV(1);
-			dsCTDV = client.getChiTietDVDao().getListChiTietDVByMaHDDV(hddv.getMaHDDV());
-		} catch (RemoteException | MalformedURLException | NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
     	start();
     }
 
@@ -102,7 +102,7 @@ public class ThanhToan_UI extends JFrame{
         
         
     	renderGUI();
-    	renderData();
+//    	renderData();
     }
 
     public void renderGUI() {
@@ -315,16 +315,20 @@ public class ThanhToan_UI extends JFrame{
         		return;
         	
         	hdp.setTinhTrang(2);
-        	hddv.setTinhTrang(1);
+        	
         	try {
 				if(client.getHoaDonPhongDao().capNhatHoaDonPhong(hdp) == false) {
 					JOptionPane.showMessageDialog(contentPane, "Có lỗi xảy ra");
 					return;
 				}
 				
-				if(client.getHoaDonDVDao().capNhatHoaDonDV(hddv) == false) {
-					JOptionPane.showMessageDialog(contentPane, "Có lỗi xảy ra");
-					return;
+				if(hddv != null) {
+					hddv.setTinhTrang(1);
+					
+					if(client.getHoaDonDVDao().capNhatHoaDonDV(hddv) == false) {
+						JOptionPane.showMessageDialog(contentPane, "Có lỗi xảy ra");
+						return;
+					}
 				}
 				
 				btnThanhToan.setEnabled(false);

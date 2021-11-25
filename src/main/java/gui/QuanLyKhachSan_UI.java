@@ -7,7 +7,10 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -28,15 +31,18 @@ public class QuanLyKhachSan_UI extends JFrame{
     
     private QuanLyHoaDonPhong_UI pageHoaDonPhong = new QuanLyHoaDonPhong_UI();
     private DatPhong_UI pageDatPhong;
-    private ThanhToan_UI pageThanhToan = new ThanhToan_UI();
-    private HoaDonDichVu_UI pageHDDichVu = new HoaDonDichVu_UI();
+    private QuanLyHoaDonDichVu_UI pageHDDichVu = new QuanLyHoaDonDichVu_UI();
+    private SuDungDV_UI pageSuDung = new SuDungDV_UI();
     
     private QuanLyDichVu_UI pageQLDichVu = new QuanLyDichVu_UI();
     
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
     
     private ThongKeDichVu_UI pageTKeDichVu = new ThongKeDichVu_UI();
-    private ThongKeKhachHang_UI pageTKeKhachHang = new ThongKeKhachHang_UI();
+    private ThongKeDoanhThu_UI pageTKeDoanhThu = new ThongKeDoanhThu_UI();
+    private ThongKeKhachHang_UI pageTKKH = new ThongKeKhachHang_UI();
+
+
     
     private QLPhong_UI pageQLPhong = new QLPhong_UI();
     private QLLoaiPhong_UI pageQLLoaiPhong = new QLLoaiPhong_UI();
@@ -58,6 +64,7 @@ public class QuanLyKhachSan_UI extends JFrame{
 	private JMenuItem itemQLLoaiPhong;
 	private JMenuItem itemQLDatPhong;
 	private JMenuItem itemSDDichVu;
+	private JMenuItem itemThongKeDoanhThu;
     
     public static void main(String[] args) throws Exception {
         System.out.println("start!");
@@ -143,35 +150,101 @@ public class QuanLyKhachSan_UI extends JFrame{
         menuBar.add(menuThongKe);
         itemThongKeDV = new JMenuItem("Thống kê dịch vụ");
         itemThongKeKH = new JMenuItem("Thống kê khách hàng");
+        itemThongKeDoanhThu = new JMenuItem("Thống kê doanh thu");
         menuThongKe.add(itemThongKeDV);
         menuThongKe.add(itemThongKeKH);
+        menuThongKe.add(itemThongKeDoanhThu);
 
         // thêm sự kiện click
         itemTrangChu.addActionListener((e) -> {
         	renderMain(pageTrangChu.getContentPane(), "trang chu");
+        	pageTrangChu.renderData();
         });
         
         itemQLHDPhong.addActionListener((e) -> {
         	renderMain(pageHoaDonPhong.getContentPane(), "quan ly hoa don phong");
+        	try {
+				pageHoaDonPhong.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         });
         
         itemDatPhong.addActionListener((e) -> {
         	renderMain(pageDatPhong.getContentPane(), "dat phong");
+        	pageDatPhong.renderData();
         });
-//        itemQLHDDV.addActionListener(this);
-//        itemQLHDDichVu.addActionListener(this);
+    
+	    itemQLHDDichVu.addActionListener((e) -> {
+	    	renderMain(pageHDDichVu.getContentPane(), "hoa don dich vu");
+	    	try {
+				pageHDDichVu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
+	    });
+        itemSDDichVu.addActionListener((e) -> {
+        	renderMain(pageSuDung.getContentPane(), "su dung dich vu");
+        	try {
+				pageSuDung.renderData();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+        });
         itemQLPhong.addActionListener((e) -> {
         	renderMain(pageQLPhong.getContentPane(), "phong");
+        	try {
+				pageQLPhong.renderData();
+			} catch (RemoteException | MalformedURLException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
         });
         itemQLLoaiPhong.addActionListener((e) -> {
         	renderMain(pageQLLoaiPhong.getContentPane(), "loai phong");
+        	try {
+				pageQLLoaiPhong.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
         });
-        itemQLHDDichVu.addActionListener((e) -> {
-        	renderMain(pageHDDichVu.getContentPane(), "hoa don dich vu");
+        itemThongKeDV.addActionListener((e) -> {
+        	try {
+				pageTKeDichVu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	renderMain(pageTKeDichVu.getContentPane(), "thong ke dich vu");
+        });
+       
+        itemThongKeDoanhThu.addActionListener((e) -> {
+        	try {
+        		pageTKeDoanhThu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	renderMain(pageTKeDoanhThu.getContentPane(), "thong ke doanh thu");
         });
 //        itemQLKhachHang.addActionListener(this);
-//        itemThongKeDV.addActionListener(this);
-//        itemThongKeKH.addActionListener(this);
+        itemThongKeDV.addActionListener((e) -> {
+        	renderMain(pageTKeDichVu.getContentPane(), "thong ke dich vu");
+        	try {
+				pageTKeDichVu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        });
+        itemThongKeKH.addActionListener((e) -> {
+        	renderMain(pageTKKH.getContentPane(), "thong ke khach hang");
+			try {
+				pageTKKH.renderData();
+			} catch (MalformedURLException | RemoteException  | NotBoundException e1) {
+				e1.printStackTrace();
+			}
+        });
 
     }
 
@@ -273,7 +346,7 @@ public class QuanLyKhachSan_UI extends JFrame{
                     
                     renderMain(pageTrangChu.getContentPane(), "trang chu");
                 }else{
-                    JOptionPane.showMessageDialog(contentPane, "Sai tài khoản hoặc mật khẩu");;
+                    JOptionPane.showMessageDialog(contentPane, "Sai tài khoản hoặc mật khẩu");
                     pageLogin.txtUsername.requestFocus();
                 }
             }
