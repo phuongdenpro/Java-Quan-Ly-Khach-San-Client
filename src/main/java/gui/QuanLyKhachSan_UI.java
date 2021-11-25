@@ -39,8 +39,10 @@ public class QuanLyKhachSan_UI extends JFrame{
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
     
     private ThongKeDichVu_UI pageTKeDichVu = new ThongKeDichVu_UI();
+    private ThongKeDoanhThu_UI pageTKeDoanhThu = new ThongKeDoanhThu_UI();
     private ThongKeKhachHang_UI pageTKKH = new ThongKeKhachHang_UI();
-//    private ThongKeDoanhThu_UI pageTKeKhachHang = new ThongKeDoanhThu_UI();
+
+
     
     private QLPhong_UI pageQLPhong = new QLPhong_UI();
     private QLLoaiPhong_UI pageQLLoaiPhong = new QLLoaiPhong_UI();
@@ -62,6 +64,7 @@ public class QuanLyKhachSan_UI extends JFrame{
 	private JMenuItem itemQLLoaiPhong;
 	private JMenuItem itemQLDatPhong;
 	private JMenuItem itemSDDichVu;
+	private JMenuItem itemThongKeDoanhThu;
     
     public static void main(String[] args) throws Exception {
         System.out.println("start!");
@@ -147,8 +150,10 @@ public class QuanLyKhachSan_UI extends JFrame{
         menuBar.add(menuThongKe);
         itemThongKeDV = new JMenuItem("Thống kê dịch vụ");
         itemThongKeKH = new JMenuItem("Thống kê khách hàng");
+        itemThongKeDoanhThu = new JMenuItem("Thống kê doanh thu");
         menuThongKe.add(itemThongKeDV);
         menuThongKe.add(itemThongKeKH);
+        menuThongKe.add(itemThongKeDoanhThu);
 
         // thêm sự kiện click
         itemTrangChu.addActionListener((e) -> {
@@ -203,6 +208,25 @@ public class QuanLyKhachSan_UI extends JFrame{
 				e1.printStackTrace();
 			}
         });
+        itemThongKeDV.addActionListener((e) -> {
+        	try {
+				pageTKeDichVu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	renderMain(pageTKeDichVu.getContentPane(), "thong ke dich vu");
+        });
+       
+        itemThongKeDoanhThu.addActionListener((e) -> {
+        	try {
+        		pageTKeDoanhThu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	renderMain(pageTKeDoanhThu.getContentPane(), "thong ke doanh thu");
+        });
 //        itemQLKhachHang.addActionListener(this);
         itemThongKeDV.addActionListener((e) -> {
         	renderMain(pageTKeDichVu.getContentPane(), "thong ke dich vu");
@@ -217,7 +241,7 @@ public class QuanLyKhachSan_UI extends JFrame{
         	renderMain(pageTKKH.getContentPane(), "thong ke khach hang");
 			try {
 				pageTKKH.renderData();
-			} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+			} catch (MalformedURLException | RemoteException  | NotBoundException e1) {
 				e1.printStackTrace();
 			}
         });

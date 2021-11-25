@@ -85,7 +85,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		new ThongKeDichVu_UI().setVisible(true);
 	}
 
-	public ThongKeDichVu_UI(){
+	public ThongKeDichVu_UI() {
 		try {
 			client = new Client();
 		} catch (IOException | NotBoundException e) {
@@ -93,7 +93,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		setBounds(0, 0, 1300, 700);
+		setBounds(0, 0, 1000, 670);
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -120,6 +120,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		DefaultComboBoxModel<String> modelLoai = new DefaultComboBoxModel<String>();
 		cboLoaiTK = new JComboBox(modelLoai);
 		panel_2.add(cboLoaiTK);
+		modelLoai.addElement("Tất cả");
 		modelLoai.addElement("Tùy chỉnh");
 		modelLoai.addElement("Ngày hôm nay");
 		modelLoai.addElement("Ngày hôm qua");
@@ -143,7 +144,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		// dpToiNgay = new kDatePicker();
 		panel_2.add(dpToiNgay);
 
-		panel_2.add(Box.createHorizontalStrut(50));
+		panel_2.add(Box.createHorizontalStrut(10));
 		JButton btnThongKe = new JButton("Thống kê", new ImageIcon("data/images/statistics.png"));
 		btnThongKe.setPreferredSize(new Dimension(160, 25));
 
@@ -173,7 +174,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		JPanel panel_5 = new JPanel();
 		panel_4.add(panel_5);
 
-		panel_5.add(Box.createHorizontalStrut(100));
+		panel_5.add(Box.createHorizontalStrut(20));
 
 		JLabel lblTongDV = new JLabel("Tổng số dịch vụ: ");
 		lblTongDV.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -204,7 +205,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		lblTongSoTien.setPreferredSize(new Dimension(100, 30));
 		lblTongSoTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_5_1.add(lblTongSoTien);
-		panel_5_1.add(Box.createHorizontalStrut(200));
+		panel_5_1.add(Box.createHorizontalStrut(50));
 		JButton btnIn = new JButton("In báo cáo", new ImageIcon("data/images/printer.png"));
 		panel_5_1.add(btnIn);
 
@@ -222,7 +223,7 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 
 			Date tuNgay = new Date(ml), toiNgay = new Date(ml); // hom nay
 
-			if (cboLoaiTK.getSelectedIndex() == 0) { // tuy chinh
+			if (cboLoaiTK.getSelectedIndex() == 1) { // tuy chinh
 				try {
 					tuNgay = dpTuNgay.getFullDate();
 					toiNgay = dpToiNgay.getFullDate();
@@ -244,30 +245,66 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 					JOptionPane.showMessageDialog(contentPane, "Ngày không hợp lệ");
 					return;
 				}
-			} else if (cboLoaiTK.getSelectedIndex() == 2) { // hom qua
+				try {
+					renderData(tuNgay, toiNgay);
+				} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else if (cboLoaiTK.getSelectedIndex() == 2) { //hom nay
+				try {
+					renderData(tuNgay, toiNgay);
+				} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else if (cboLoaiTK.getSelectedIndex() == 3) { // hom qua
 				tuNgay = utils.Ngay.homQua();
 				toiNgay = utils.Ngay.homQua();
-			} else if (cboLoaiTK.getSelectedIndex() == 3) { // 7 ngay qua
+				try {
+					renderData(tuNgay, toiNgay);
+				} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else if (cboLoaiTK.getSelectedIndex() == 4) { // 7 ngay qua
 				tuNgay = utils.Ngay._7NgayQua();
-			} else if (cboLoaiTK.getSelectedIndex() == 4) { // 1 thang qua
+				try {
+					renderData(tuNgay, toiNgay);
+				} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else if (cboLoaiTK.getSelectedIndex() == 5) { // 1 thang qua
 				tuNgay = utils.Ngay._1ThangQua();
-			} else if (cboLoaiTK.getSelectedIndex() == 5) { // 1 nam qua
+				try {
+					renderData(tuNgay, toiNgay);
+				} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else if (cboLoaiTK.getSelectedIndex() == 6) { // 1 nam qua
 				tuNgay = utils.Ngay._1NamQua();
+				try {
+					renderData(tuNgay, toiNgay);
+				} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else if (cboLoaiTK.getSelectedIndex() == 0) { // 1 nam qua
+				try {
+					renderData();
+				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
-//			if (!String.valueOf(cboLimit.getSelectedItem()).matches("^\\d+$")) {
-//				JOptionPane.showMessageDialog(contentPane, "Số lượng khách hàng tối đa không hợp lệ");
-//				return;
-//			}
-//			
-			try {
-				renderData(tuNgay, toiNgay);
-			} catch (MalformedURLException | RemoteException | SQLException | NotBoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		});
 		btnLamMoi.addActionListener((e) -> {
+			dpTuNgay.btn.setEnabled(false);
+			dpToiNgay.btn.setEnabled(false);
+			cboLoaiTK.setSelectedIndex(0);
 			try {
 				renderData();
 			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
@@ -276,8 +313,11 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 			}
 
 		});
+		btnIn.addActionListener((e) -> {
+			JOptionPane.showMessageDialog(contentPane, "In báo cáo thành công");
+		});
 		cboLoaiTK.addActionListener((e) -> {
-			if (cboLoaiTK.getSelectedIndex() == 0) {
+			if (cboLoaiTK.getSelectedIndex() == 1) {
 				dpTuNgay.btn.setEnabled(true);
 				dpToiNgay.btn.setEnabled(true);
 			} else {
@@ -329,6 +369,9 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 	}
 
 	public void renderData() throws MalformedURLException, RemoteException, NotBoundException {
+		dpTuNgay.btn.setEnabled(false);
+		dpToiNgay.btn.setEnabled(false);
+		cboLoaiTK.setSelectedIndex(0);
 		ChiTietDVDao ctdichVuDao = client.getChiTietDVDao();
 		dsdv = ctdichVuDao.getListChiTietDV();
 		table.clearSelection();
@@ -345,17 +388,17 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 				tinhTrang = "Đã thanh toán";
 			model.addRow(new Object[] { dichvu.getHoaDonDV().getMaHDDV(), dichvu.getDichVu().getMaDV(),
 					dichvu.getDichVu().getTenDV(), dichvu.getSoLuong(), Currency.format(dichvu.getDonGia()),
-					Currency.format(dichvu.getSoLuong() * dichvu.getDonGia()), formatDate(dichvu.getHoaDonDV().getNgayGioDat()),
-					tinhTrang, dichvu.getHoaDonDV().getKhachHang().getMaKH(),
-					dichvu.getHoaDonDV().getKhachHang().getTenKH()
+					Currency.format(dichvu.getSoLuong() * dichvu.getDonGia()),
+					formatDate(dichvu.getHoaDonDV().getNgayGioDat()), tinhTrang,
+					dichvu.getHoaDonDV().getKhachHang().getMaKH(), dichvu.getHoaDonDV().getKhachHang().getTenKH()
 
 			});
-			
+
 			tongSoTien += dichvu.getSoLuong() * dichvu.getDonGia();
 			tongSoBan++;
-			if(!isExisted(dichvu.getDichVu().getTenDV(), s))
+			if (!isExisted(dichvu.getDichVu().getTenDV(), s))
 				s.add(dichvu.getDichVu().getTenDV());
-				
+
 		}
 		;
 		lblTongSoTien.setText(Currency.format(tongSoTien));
@@ -384,15 +427,15 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 				tinhTrang = "Đã thanh toán";
 			model.addRow(new Object[] { dichvu.getHoaDonDV().getMaHDDV(), dichvu.getDichVu().getMaDV(),
 					dichvu.getDichVu().getTenDV(), dichvu.getSoLuong(), Currency.format(dichvu.getDonGia()),
-					Currency.format(dichvu.getSoLuong() * dichvu.getDonGia()), formatDate(dichvu.getHoaDonDV().getNgayGioDat()),
-					tinhTrang, dichvu.getHoaDonDV().getKhachHang().getMaKH(),
-					dichvu.getHoaDonDV().getKhachHang().getTenKH()
-					
+					Currency.format(dichvu.getSoLuong() * dichvu.getDonGia()),
+					formatDate(dichvu.getHoaDonDV().getNgayGioDat()), tinhTrang,
+					dichvu.getHoaDonDV().getKhachHang().getMaKH(), dichvu.getHoaDonDV().getKhachHang().getTenKH()
+
 			});
-			
+
 			tongSoTien += dichvu.getSoLuong() * dichvu.getDonGia();
 			tongSoBan++;
-			if(!isExisted(dichvu.getDichVu().getTenDV(), s))
+			if (!isExisted(dichvu.getDichVu().getTenDV(), s))
 				s.add(dichvu.getDichVu().getTenDV());
 		}
 		;
@@ -410,12 +453,11 @@ public class ThongKeDichVu_UI extends JFrame implements ActionListener, MouseLis
 		return sdf.format(date);
 	}
 
-	public boolean isExisted(Object obj,ArrayList<String> s) {
+	public boolean isExisted(Object obj, ArrayList<String> s) {
 		for (int i = 0; i < s.size(); i++)
 			if (obj.equals(s.get(i)))
 				return true;
 		return false;
 	}
-
 
 }
