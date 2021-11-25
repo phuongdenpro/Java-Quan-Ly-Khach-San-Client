@@ -199,25 +199,35 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 
 		JPanel panel_5 = new JPanel();
 		panel_4.add(panel_5);
+		
+		JPanel panel_5_ = new JPanel();
+		panel_5_.setLayout(new BoxLayout(panel_5_, BoxLayout.Y_AXIS));
+		JLabel lblChuthic1 = new JLabel("Double click vào khách hàng ");
+		lblChuthic1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		JLabel lblChuthic2 = new JLabel("để xem chi tiết về số lần đặt");
+		lblChuthic2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panel_5_.add(lblChuthic1);
+		panel_5_.add(lblChuthic2);
+		panel_5.add(panel_5_);
 
-		panel_5.add(Box.createHorizontalStrut(230));
+		panel_5.add(Box.createHorizontalStrut(50));
 		JLabel lblTong = new JLabel("Tổng số khách hàng: ");
-		lblTong.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblTong.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_5.add(lblTong);
 
 		lblTongSo = new JLabel("0");
-		lblTongSo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblTongSo.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_5.add(lblTongSo);
 
 		JPanel panel_5_1 = new JPanel();
 		panel_4.add(panel_5_1);
 
 		JLabel lblTngSTin = new JLabel("Tổng doanh thu: ");
-		lblTngSTin.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblTngSTin.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_5_1.add(lblTngSTin);
 
 		lblTongSoTien = new JLabel("0");
-		lblTongSoTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblTongSoTien.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_5_1.add(lblTongSoTien);
 		panel_5_1.add(Box.createHorizontalStrut(150));
 		JButton btnIn = new JButton("In báo cáo", new ImageIcon("data/images/printer.png"));
