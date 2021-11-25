@@ -39,6 +39,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.event.WindowAdapter;
 //import java.awt.event.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -430,6 +431,21 @@ public class QuanLyHoaDonDichVu_UI extends JFrame{
         	pgSuDungDv.set_hddv(hddv);
         	pgSuDungDv.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         	pgSuDungDv.setVisible(true);
+        	pgSuDungDv.addWindowListener(new WindowAdapter() {
+        		@Override
+        	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        	        try {
+        	        	
+						renderData();
+						tblDSHDDV.setRowSelectionInterval(idx, idx);
+						renderDSDV(dshddv.get(idx));
+					} catch (MalformedURLException | RemoteException | NotBoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        	        pgSuDungDv.dispose();
+        	    }
+        	});
         	
         	
         });

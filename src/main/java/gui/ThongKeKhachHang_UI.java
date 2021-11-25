@@ -67,7 +67,7 @@ public class ThongKeKhachHang_UI extends JFrame implements ActionListener, Mouse
 	DialogDatePicker f = new DialogDatePicker();
 	private kDatePicker dpTuNgay;
 	private kDatePicker dpToiNgay;
-	private JComboBox comboBox;
+	private JComboBox comboBoƯx;
 	private JComboBox cboLoaiTK;
 
 	private JLabel lblTongSo;

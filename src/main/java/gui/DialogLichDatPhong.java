@@ -95,6 +95,11 @@ public class DialogLichDatPhong extends JDialog{
         btnLamMoi.setBackground(Color.WHITE);
         btnLamMoi.setBounds(588, 3, 92, 26);
         pnInput.add(btnLamMoi);
+        
+        JButton btnXemLich = new JButton("Xem dạng lịch");
+        btnXemLich.setBackground(Color.WHITE);
+        btnXemLich.setBounds(695, 3, 128, 26);
+        pnInput.add(btnXemLich);
 
         JPanel pnTable = new JPanel();
         pnView.add(pnTable, BorderLayout.CENTER);
@@ -122,6 +127,13 @@ public class DialogLichDatPhong extends JDialog{
         });
         
         renderData();
+        
+        btnXemLich.addActionListener(e -> {
+        	this.dispose();
+        	CalendarDatPhong_UI pageCalendar = new CalendarDatPhong_UI();
+        	pageCalendar.setMaPhong(maPhong);
+        	pageCalendar.setVisible(true);
+        });
     }
     
     public void renderData() {
