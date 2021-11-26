@@ -199,8 +199,7 @@ public class QuanLyKhachHang_UI extends JFrame {
 			}
 		};
 		tableShowInfo = new JTable(modelTable);
-		JScrollPane scpShowTableKH = new JScrollPane(tableShowInfo, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scpShowTableKH = new JScrollPane(tableShowInfo);
 		pnShowTableKH.add(scpShowTableKH, BorderLayout.CENTER);
 
 		btnXemTatCa = new JButton("Xem tất cả");
@@ -225,21 +224,28 @@ public class QuanLyKhachHang_UI extends JFrame {
 			}
 		});
 		btnThem.addActionListener((e) -> {
+			
+			
 			if (txtTenKH.getText().trim().equals("")) {
 				renderError(txtTenKH, "Tên khách hàng không được để trống");
-				return;
-			}
-			if (!txtTenKH.getText().matches("^[^0-9]{2,25}$")) {
-				renderError(txtTenKH, "Tên khách hàng không được chứa chữ số, ít nhất là 2 ký tự");
 				return;
 			}
 			if (txtCMND.getText().trim().equals("")) {
 				renderError(txtCMND, "Cmnd không được để trống");
 				return;
 			}
+			if (txtSDT.getText().trim().equals("")) {
+				renderError(txtSDT, "Số điện thoại không được để trống");
+				return;
+			}
+			if (!txtTenKH.getText().matches("^[^0-9]{2,25}$")) {
+				renderError(txtTenKH, "Tên khách hàng không được chứa chữ số, ít nhất là 2 ký tự");
+				return;
+			}
+			
 
 			if (!txtCMND.getText().matches("^(\\d{9}|\\d{12})$")) {
-				renderError(txtTenKH, "Cmnd chỉ được chứa chữ số, bao gồm 9 hoặc 12 ký tự");
+				renderError(txtCMND, "Cmnd chỉ được chứa chữ số, bao gồm 9 hoặc 12 ký tự");
 				return;
 			}
 
@@ -299,7 +305,7 @@ public class QuanLyKhachHang_UI extends JFrame {
 			}
 
 			if (!txtCMND.getText().matches("^(\\d{9}|\\d{12})$")) {
-				renderError(txtTenKH, "Cmnd chỉ được chứa chữ số, bao gồm 9 hoặc 12 ký tự");
+				renderError(txtCMND, "Cmnd chỉ được chứa chữ số, bao gồm 9 hoặc 12 ký tự");
 				return;
 			}
 
@@ -473,7 +479,7 @@ public class QuanLyKhachHang_UI extends JFrame {
 		for (int j = 0; j < dskh.size(); j++) {
 			KhachHang khachhang = dskh.get(j);
 			modelTable.addRow(new Object[] { khachhang.getMaKH(), khachhang.getTenKH(), khachhang.getCmnd(),
-					khachhang.getSoDienThoai(), khachhang.getNgayHetHan(), khachhang.getLoaiKH()
+					khachhang.getSoDienThoai(), formatDate(khachhang.getNgayHetHan()), khachhang.getLoaiKH()
 
 			});
 		}
@@ -488,7 +494,7 @@ public class QuanLyKhachHang_UI extends JFrame {
 		for (int j = 0; j < dskhtim.size(); j++) {
 			KhachHang khachhang = dskhtim.get(j);
 			modelTable.addRow(new Object[] { khachhang.getMaKH(), khachhang.getTenKH(), khachhang.getCmnd(),
-					khachhang.getSoDienThoai(), khachhang.getNgayHetHan(), khachhang.getLoaiKH()
+					khachhang.getSoDienThoai(), formatDate(khachhang.getNgayHetHan()), khachhang.getLoaiKH()
 
 			});
 		}

@@ -39,7 +39,7 @@ public class QuanLyKhachSan_UI extends JFrame{
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
     
     private ThongKeDichVu_UI pageTKeDichVu = new ThongKeDichVu_UI();
-//    private ThongKeDoanhThu_UI pageTKeDoanhThu = new ThongKeDoanhThu_UI();
+    private ThongKeDoanhThu_UI pageTKeDoanhThu = new ThongKeDoanhThu_UI();
     private ThongKeKhachHang_UI pageTKKH = new ThongKeKhachHang_UI();
 
 
@@ -208,26 +208,35 @@ public class QuanLyKhachSan_UI extends JFrame{
 				e1.printStackTrace();
 			}
         });
-        itemThongKeDV.addActionListener((e) -> {
+      itemQLDichVu.addActionListener((e) ->{
+    	  renderMain((JPanel) pageQLDichVu.getContentPane(), "quan ly dich vu");
+    	  try {
+    		  pageQLDichVu.clear();
+    		  pageQLDichVu.renderDataDV();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
+      });
+      itemQLKhachHang.addActionListener((e) ->{
+    	  renderMain((JPanel) pageQLKhachHang.getContentPane(), "quan ly khach hang");
+    	  try {
+    		  pageQLKhachHang.clear();
+    		  pageQLKhachHang.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				e1.printStackTrace();
+			}
+      });
+ 
+        itemThongKeDoanhThu.addActionListener((e) -> {
         	try {
-				pageTKeDichVu.renderData();
+        		pageTKeDoanhThu.renderData();
 			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-        	renderMain(pageTKeDichVu.getContentPane(), "thong ke dich vu");
+        	renderMain(pageTKeDoanhThu.getContentPane(), "thong ke doanh thu");
         });
-       
-        itemThongKeDoanhThu.addActionListener((e) -> {
-//        	try {
-//        		pageTKeDoanhThu.renderData();
-//			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//        	renderMain(pageTKeDoanhThu.getContentPane(), "thong ke doanh thu");
-        });
-//        itemQLKhachHang.addActionListener(this);
+
         itemThongKeDV.addActionListener((e) -> {
         	renderMain(pageTKeDichVu.getContentPane(), "thong ke dich vu");
         	try {
