@@ -39,6 +39,8 @@ public class QuanLyDichVu_UI extends JFrame{
     ImageIcon searchIcon = new ImageIcon("data/images/search_16.png");
     ImageIcon checkIcon = new ImageIcon("data/images/check2_16.png");
     ImageIcon errorIcon = new ImageIcon("data/images/cancel_16.png");
+	private DefaultComboBoxModel<String> modelLoc;
+	private JComboBox cmbLoaiTimKiem;
     
 
     public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException{
@@ -77,48 +79,48 @@ public class QuanLyDichVu_UI extends JFrame{
         pnInfoDV.setLayout(null);
 
         JLabel lbMaDV = new JLabel("Mã dịch vụ: ");
-        lbMaDV.setBounds(12, 23, 80, 20);
+        lbMaDV.setBounds(12, 33, 80, 25);
         pnInfoDV.add(lbMaDV);
 
         txtMaDV = new JTextField();
-        txtMaDV.setBounds(100, 23, 279, 20);
+        txtMaDV.setBounds(100, 33, 279, 25);
         txtMaDV.setEditable(false);
         txtMaDV.setColumns(10);
         pnInfoDV.add(txtMaDV);
 
         JLabel lbTenDV = new JLabel("Tên dịch vụ:");
-        lbTenDV.setBounds(12, 55, 80, 20);
+        lbTenDV.setBounds(12, 70, 80, 25);
         pnInfoDV.add(lbTenDV);
 
         txtTenDV = new JTextField();
-        txtTenDV.setBounds(100, 55, 279, 20);
+        txtTenDV.setBounds(100, 70, 279, 25);
         pnInfoDV.add(txtTenDV);
         txtTenDV.setColumns(10);
 
         JLabel lbDonGia = new JLabel("Đơn giá:");
-        lbDonGia.setBounds(12, 87, 80, 16);
+        lbDonGia.setBounds(12, 105, 80, 25);
         pnInfoDV.add(lbDonGia);
 
         txtDonGia = new JTextField();
-        txtDonGia.setText("0.0");
-        txtDonGia.setBounds(100, 85, 279, 20);
+     //   txtDonGia.setText("0.0");
+        txtDonGia.setBounds(100, 105, 279, 25);
         pnInfoDV.add(txtDonGia);
         txtDonGia.setColumns(10);
 
         btnThem = new JButton("Thêm", blueAddIcon);
-        btnThem.setBounds(12, 143, 108, 26);
+        btnThem.setBounds(12, 163, 108, 26);
         pnInfoDV.add(btnThem);
 
         btnSua = new JButton("Sửa", editIcon);
-        btnSua.setBounds(132, 143, 120, 26);
+        btnSua.setBounds(132, 163, 120, 26);
         pnInfoDV.add(btnSua);
 
         btnXoa = new JButton("Xóa", deleteIcon);
-        btnXoa.setBounds(264, 143, 115, 26);
+        btnXoa.setBounds(264, 163, 115, 26);
         pnInfoDV.add(btnXoa);
 
         btnLamLai = new JButton("Làm lại", refreshIcon);
-        btnLamLai.setBounds(132, 185, 120, 26);
+        btnLamLai.setBounds(132, 205, 120, 26);
         pnInfoDV.add(btnLamLai);
 
         lbShowMessages = new JLabel("");
@@ -136,18 +138,29 @@ public class QuanLyDichVu_UI extends JFrame{
         pnShowDV.setLayout(null);
         pnMain.add(pnShowDV);
 
-        JLabel lbTimKiem = new JLabel("Tìm dịch vụ:");
-        lbTimKiem.setBounds(12, 23, 75, 20);
-        pnShowDV.add(lbTimKiem);
+        modelLoc = new DefaultComboBoxModel<String>();
+		cmbLoaiTimKiem = new JComboBox(modelLoc);
+		cmbLoaiTimKiem.setBackground(Color.WHITE);
+		modelLoc.addElement("Mã dịch vụ");
+		modelLoc.addElement("Tên dịch vụ");
+    //    JLabel lbTimKiem = new JLabel("Tìm dịch vụ:");
+		cmbLoaiTimKiem.setBounds(12, 20, 100, 26);
+        pnShowDV.add(cmbLoaiTimKiem);
 
         txtTim = new JTextField();
-        txtTim.setBounds(85, 23, 225, 20);
+        txtTim.setBounds(120, 20, 200, 26);
         pnShowDV.add(txtTim);
         txtTim.setColumns(10);
 
         btnTim = new JButton("Tìm", searchIcon);
-        btnTim.setBounds(322, 20, 90, 26);
+        btnTim.setBounds(325, 20, 90, 26);
         pnShowDV.add(btnTim);
+        btnThem.setBackground(Color.WHITE);
+        btnSua.setBackground(Color.WHITE);
+        btnXoa.setBackground(Color.WHITE);
+        btnLamLai.setBackground(Color.WHITE);
+        btnTim.setBackground(Color.WHITE);
+        
 
         JPanel pnTableDV = new JPanel();
         pnTableDV.setBounds(12, 55, 556, 515);
@@ -168,6 +181,7 @@ public class QuanLyDichVu_UI extends JFrame{
         btnXemTatCa = new JButton("Xem tất cả");
         btnXemTatCa.setBounds(426, 20, 121, 26);
         pnShowDV.add(btnXemTatCa);
+        btnXemTatCa.setBackground(Color.WHITE);
 
         reSizeColumnTable();
         renderDataDV();
@@ -265,6 +279,20 @@ public class QuanLyDichVu_UI extends JFrame{
       		JOptionPane.showMessageDialog(pnMain, "Xóa thất bại");
       	}
       });
+      btnXemTatCa.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			try {
+				renderDataDV();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		}
+	});
       
         
     }
@@ -294,36 +322,6 @@ public class QuanLyDichVu_UI extends JFrame{
         lbShowMessages.setText(message);
     }
 
-    private boolean validData() {
-        String tenDV = txtTenDV.getText().trim();
-        String donGia = txtDonGia.getText().trim();
-        if (!(tenDV.length() > 0)) {
-            showMessage("Lá»—i: TĂªn khĂ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng", txtTenDV);
-            return false;
-        }
-        if (donGia.length() > 0) {
-            try {
-                Double x = Double.parseDouble(donGia);
-                if (x < 0) {
-                    showMessage("Lá»—i: Ä�Æ¡n giĂ¡ >= 0", txtDonGia);
-                    return false;
-                }
-            } catch (NumberFormatException ex) {
-                showMessage("Lá»—i: Ä�Æ¡n giĂ¡ pháº£i nháº­p sá»‘.", txtDonGia);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean validDataTim() {
-        String tenDV = txtTim.getText().trim();
-        if (!(tenDV.length() > 0)) {
-            showMessage("Lá»—i: TĂªn khĂ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng", txtTim);
-            return false;
-        }
-        return true;
-    }
 
 
     private void reSizeColumnTable() {
@@ -338,7 +336,8 @@ public class QuanLyDichVu_UI extends JFrame{
     public void clear() {
     	txtMaDV.setText("");
     	txtTenDV.setText("");
-    	txtDonGia.setText("0");
+    	txtDonGia.setText("");
+    	txtTim.setText("");
     }
     public void renderDataDV() throws MalformedURLException, RemoteException, NotBoundException {
     	dsdv = client.getDichVuDao().getListDichVu();
