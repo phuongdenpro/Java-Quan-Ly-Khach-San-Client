@@ -55,7 +55,7 @@ public class QuanLyKhachHang_UI extends JFrame {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		setSize(1000, 670);
+		setSize(1350, 670);
 		setTitle("Quản Lý Khách Hàng");
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -161,7 +161,7 @@ public class QuanLyKhachHang_UI extends JFrame {
 		JPanel pbTableKH = new JPanel();
 		pbTableKH.setBorder(
 				new TitledBorder(null, "Danh sách khách hàng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pbTableKH.setBounds(360, 41, 624, 588);
+		pbTableKH.setBounds(360, 41, 964, 588);
 		pnMain.add(pbTableKH);
 		pbTableKH.setLayout(null);
 
@@ -186,7 +186,7 @@ public class QuanLyKhachHang_UI extends JFrame {
 		pbTableKH.add(btnTim);
 
 		JPanel pnShowTableKH = new JPanel();
-		pnShowTableKH.setBounds(12, 52, 600, 527);
+		pnShowTableKH.setBounds(12, 52, 942, 527);
 		pbTableKH.add(pnShowTableKH);
 		pnShowTableKH.setLayout(new BorderLayout(0, 0));
 

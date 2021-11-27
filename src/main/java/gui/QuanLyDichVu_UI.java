@@ -54,7 +54,7 @@ public class QuanLyDichVu_UI extends JFrame {
 		} catch (IOException | NotBoundException e) {
 			e.printStackTrace();
 		}
-		setSize(1000, 670);
+		setSize(1350, 670);
 		setTitle("Quản lý dịch vụ");
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -135,7 +135,7 @@ public class QuanLyDichVu_UI extends JFrame {
 		JPanel pnShowDV = new JPanel();
 		pnShowDV.setBorder(
 				new TitledBorder(null, "Danh sách dịch vụ", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnShowDV.setBounds(402, 46, 580, 582);
+		pnShowDV.setBounds(402, 46, 922, 582);
 		pnShowDV.setLayout(null);
 		pnMain.add(pnShowDV);
 
@@ -163,12 +163,11 @@ public class QuanLyDichVu_UI extends JFrame {
 		btnTim.setBackground(Color.WHITE);
 
 		JPanel pnTableDV = new JPanel();
-		pnTableDV.setBounds(12, 55, 556, 515);
+		pnTableDV.setBounds(12, 55, 900, 515);
 		pnShowDV.add(pnTableDV);
 		pnTableDV.setLayout(new BorderLayout(0, 0));
 
 		table = new JTable(modelTable) {
-			// khĂ³a sá»­a dá»¯ liá»‡u trá»±c tiáº¿p trĂªn table
 			@Override
 			public boolean isCellEditable(int i, int i1) {
 				return false;
@@ -331,10 +330,10 @@ public class QuanLyDichVu_UI extends JFrame {
 	}
 
 	private void reSizeColumnTable() {
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.getColumnModel().getColumn(0).setPreferredWidth(83);
-		table.getColumnModel().getColumn(1).setPreferredWidth(350);
-		table.getColumnModel().getColumn(2).setPreferredWidth(120);
+//		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//		table.getColumnModel().getColumn(0).setPreferredWidth(83);
+//		table.getColumnModel().getColumn(1).setPreferredWidth(350);
+//		table.getColumnModel().getColumn(2).setPreferredWidth(120);
 	}
 
 	public JPanel getpnMain() {
