@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.prefs.NodeChangeEvent;
 
 public class QuanLyKhachSan_UI extends JFrame{
     // thêm các page vô đây cho dễ nhớ
@@ -39,7 +38,7 @@ public class QuanLyKhachSan_UI extends JFrame{
     private QuanLyKhachHang_UI pageQLKhachHang = new QuanLyKhachHang_UI();
     
     private ThongKeDichVu_UI pageTKeDichVu = new ThongKeDichVu_UI();
-//    private ThongKeDoanhThu_UI pageTKeDoanhThu = new ThongKeDoanhThu_UI();
+    private ThongKeDoanhThu_UI pageTKeDoanhThu = new ThongKeDoanhThu_UI();
     private ThongKeKhachHang_UI pageTKKH = new ThongKeKhachHang_UI();
 
 
@@ -219,13 +218,13 @@ public class QuanLyKhachSan_UI extends JFrame{
         });
        
         itemThongKeDoanhThu.addActionListener((e) -> {
-//        	try {
-//        		pageTKeDoanhThu.renderData();
-//			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//        	renderMain(pageTKeDoanhThu.getContentPane(), "thong ke doanh thu");
+        	try {
+        		pageTKeDoanhThu.renderData();
+			} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	renderMain(pageTKeDoanhThu.getContentPane(), "thong ke doanh thu");
         });
 //        itemQLKhachHang.addActionListener(this);
         itemThongKeDV.addActionListener((e) -> {
