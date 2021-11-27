@@ -381,8 +381,8 @@ public class ThongKeDoanhThu_UI extends JFrame {
 		flowLayout_8.setAlignment(FlowLayout.LEFT);
 		panel_4.add(pnItem8);
 
-		JButton btnXem = new JButton("Xem chi tiết bằng biểu đồ");
-		btnXem.setPreferredSize(new Dimension(300, 30));
+		JButton btnXem = new JButton("Xem biểu đồ thống kê tổng theo phòng");
+		btnXem.setPreferredSize(new Dimension(350, 30));
 		btnXem.setBackground(Color.WHITE);
 		pnItem8.add(btnXem);
 
@@ -488,6 +488,15 @@ public class ThongKeDoanhThu_UI extends JFrame {
 			btnIn.addActionListener((e) -> {
 				JOptionPane.showMessageDialog(contentPane, "In báo cáo thành công");
 			});
+			btnXem.addActionListener((e) -> {
+				BieuDoThongKe_UI gui = new BieuDoThongKe_UI("Thống kê");
+				try {
+					gui.renderGUI();
+				} catch (NotBoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			});
 		cboLoaiTK.addActionListener((e) -> {
 			if (cboLoaiTK.getSelectedIndex() == 1) {
 				dpTuNgay.btn.setEnabled(true);
@@ -497,6 +506,7 @@ public class ThongKeDoanhThu_UI extends JFrame {
 				dpToiNgay.btn.setEnabled(false);
 			}
 		});
+		
 
 	}
 
